@@ -1,7 +1,9 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const CourseCard = ({ course }) => {
+  const router = useRouter();
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 h-full flex flex-col">
       {/* Course Cover Image */}
@@ -49,7 +51,7 @@ const CourseCard = ({ course }) => {
       </div>
       
       <div className="p-4 border-t">
-        <Button className="w-full bg-green-600 hover:bg-green-700">
+        <Button onClick={()=>{router.push('/courses/course-id')}} className="w-full bg-green-600 hover:bg-green-700">
           Enroll Now
         </Button>
       </div>

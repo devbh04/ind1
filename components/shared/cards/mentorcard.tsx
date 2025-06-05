@@ -1,6 +1,8 @@
 import { Star, Briefcase, Globe, MessageSquare } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const MentorCard = ({ mentor }) => {
+  const router = useRouter();
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300">
       {/* Mentor Header */}
@@ -60,7 +62,7 @@ const MentorCard = ({ mentor }) => {
         </p>
         
         {/* Action Button */}
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-md transition-colors">
+        <button onClick={()=>{router.push('/courses/course-id')}} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-md transition-colors">
           <MessageSquare className="h-4 w-4" />
           <span>Book Session</span>
         </button>
