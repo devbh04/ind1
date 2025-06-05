@@ -7,7 +7,8 @@ import {
 } from "@/components/ui/carousel"
 import MentorCard from "../mentorcard"
 
-export function CarouselSliderMentor() {
+export function CarouselSliderMentor({mentors}) {
+    
     return (
       <Carousel
         opts={{
@@ -16,10 +17,10 @@ export function CarouselSliderMentor() {
         className="w-full p-4 rounded-lg"
       >
         <CarouselContent>
-          {Array.from({ length: 10 }).map((_, index) => (
-            <CarouselItem key={index} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+          {mentors.map((mentor) => (
+            <CarouselItem key={mentor.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
               <div className="p-1">
-                  <MentorCard></MentorCard>
+                <MentorCard mentor={mentor} />
               </div>
             </CarouselItem>
           ))}
@@ -28,5 +29,4 @@ export function CarouselSliderMentor() {
         <CarouselNext className="-right-4"/>
       </Carousel>
     )
-  }
-  
+}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Work_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Work_Sans({
   weight: '400',
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.className} h-screen text-black bg-slate-100`}
       >
+        <Toaster />
         {children}
       </body>
     </html>

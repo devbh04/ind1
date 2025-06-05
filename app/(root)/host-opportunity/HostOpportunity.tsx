@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { GlobeAltIcon, LockClosedIcon, QuestionMarkCircleIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
-import { ArrowLeft, Mail, Phone } from 'lucide-react';
+import { GlobeAltIcon, LockClosedIcon, QuestionMarkCircleIcon, ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ArrowLeft, BadgeDollarSign, Contrast, ContrastIcon, DollarSign, IdCard, IdCardIcon, LetterText, Mail, Phone, Trophy } from 'lucide-react';
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
@@ -12,6 +12,15 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+
+interface Stage {
+  title: string;
+  description: string;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  link: string;
+}
 
 const HostHackathon = () => {
   const [logo, setLogo] = useState('data:image/png;base64,iVBOR');
@@ -20,6 +29,55 @@ const HostHackathon = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [registrationDeadline, setRegistrationDeadline] = useState<Date>();
+  const [stageCount, setStageCount] = useState<number>(1);
+  const [stages, setStages] = useState<Stage[]>([{
+    title: '',
+    description: '',
+    startDate: undefined,
+    endDate: undefined,
+    link: ''
+  }]);
+
+  const handleStageCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const count = parseInt(e.target.value) || 0;
+    setStageCount(count);
+    
+    // Add or remove stages based on the new count
+    if (count > stages.length) {
+      // Add new stages
+      const newStages = [...stages];
+      for (let i = stages.length; i < count; i++) {
+        newStages.push({
+          title: '',
+          description: '',
+          startDate: undefined,
+          endDate: undefined,
+          link: ''
+        });
+      }
+      setStages(newStages);
+    } else if (count < stages.length) {
+      // Remove stages from the end
+      setStages(stages.slice(0, count));
+    }
+  };
+
+  const updateStage = (index: number, field: keyof Stage, value: any) => {
+    const updatedStages = [...stages];
+    updatedStages[index] = {
+      ...updatedStages[index],
+      [field]: value
+    };
+    setStages(updatedStages);
+  };
+
+  const removeStage = (index: number) => {
+    if (stageCount <= 1) return;
+    
+    const updatedStages = stages.filter((_, i) => i !== index);
+    setStages(updatedStages);
+    setStageCount(stageCount - 1);
+  };
 
   return (
     <div className="min-h-screen">
@@ -103,7 +161,7 @@ const HostHackathon = () => {
                     selected={endDate}
                     onSelect={setEndDate}
                     initialFocus
-                    fromDate={startDate} // Ensures end date can't be before start date
+                    fromDate={startDate}
                   />
                 </PopoverContent>
               </Popover>
@@ -131,7 +189,7 @@ const HostHackathon = () => {
                     selected={registrationDeadline}
                     onSelect={setRegistrationDeadline}
                     initialFocus
-                    toDate={startDate} // Ensures registration deadline is before start date
+                    toDate={startDate}
                   />
                 </PopoverContent>
               </Popover>
@@ -165,9 +223,69 @@ const HostHackathon = () => {
                 </div>
               </div>
             </div>
+            <div className=''>
+              <Label className="text-sm font-medium mb-2 block">Address</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Textarea 
+                  placeholder="123 Main St, City, State, Zip Code" 
+                  className="h-10 sm:h-11 pl-10" 
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Rest of the existing form fields... */}
+          {/* Prize Information */}
+          <div className="space-y-4 mb-10">
+            <h3 className="text-sm font-medium">Prize Pool Information*</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Winner</Label>
+                <div className="relative">
+                  <Trophy className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input 
+                    type="number" 
+                    placeholder="Rs. 50,000" 
+                    className="h-10 sm:h-11 pl-10" 
+                  />
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-medium mb-2 block">1st Runner-up</Label>
+                <div className="relative">
+                  <BadgeDollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input 
+                    type="number" 
+                    placeholder="Rs. 30,000" 
+                    className="h-10 sm:h-11 pl-10" 
+                  />
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-medium mb-2 block">2nd Runner-up</Label>
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input 
+                    type="number" 
+                    placeholder="Rs. 20,000" 
+                    className="h-10 sm:h-11 pl-10" 
+                  />
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Participants</Label>
+                <div className="relative">
+                  <IdCardIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input 
+                    type="text" 
+                    placeholder="Reward" 
+                    className="h-10 sm:h-11 pl-10" 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Hackathon Type */}
           <div className="mb-10">
             <label className="block mb-2 font-medium">
@@ -370,10 +488,178 @@ Technical Requirements:
                 ></textarea>
           </div>
 
+          {/* Stages and Timeline Section */}
+          <div className="mb-10 mt-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">Hackathon Stages & Timeline</h2>
+            </div>
+            
+            <div className="mb-6">
+              <Label className="block mb-2 font-medium">
+                Number of Stages <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                type="number"
+                min="1"
+                value={stageCount}
+                onChange={handleStageCountChange}
+                className="w-24"
+              />
+              <p className="text-sm text-gray-500 mt-1">Enter how many stages your hackathon will have</p>
+            </div>
+
+            {stages.map((stage, index) => (
+              <div key={index} className="border rounded-lg p-6 mb-6 relative">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium">Stage {index + 1}</h3>
+                  {stageCount > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeStage(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label className="block mb-2 font-medium">
+                      Stage Title <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      type="text"
+                      placeholder="e.g., Registration, Submission, Judging"
+                      value={stage.title}
+                      onChange={(e) => updateStage(index, 'title', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label className="block mb-2 font-medium">
+                      Stage Link/URL
+                    </Label>
+                    <Input
+                      type="url"
+                      placeholder="e.g., Google Form link for submission"
+                      value={stage.link}
+                      onChange={(e) => updateStage(index, 'link', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <Label className="block mb-2 font-medium">
+                    Stage Description <span className="text-red-500">*</span>
+                  </Label>
+                  <Textarea
+                    placeholder="Describe what happens in this stage, any requirements, etc."
+                    value={stage.description}
+                    onChange={(e) => updateStage(index, 'description', e.target.value)}
+                    rows={3}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">Start Date*</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal h-10 sm:h-11",
+                            !stage.startDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {stage.startDate ? format(stage.startDate, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={stage.startDate}
+                          onSelect={(date) => updateStage(index, 'startDate', date)}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium mb-2 block">End Date*</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal h-10 sm:h-11",
+                            !stage.endDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {stage.endDate ? format(stage.endDate, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={stage.endDate}
+                          onSelect={(date) => updateStage(index, 'endDate', date)}
+                          initialFocus
+                          fromDate={stage.startDate}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Preview of stages timeline */}
+            {stages.length > 0 && (
+              <div className="mt-8">
+                <h3 className="text-lg font-medium mb-4">Timeline Preview</h3>
+                <div className="space-y-4">
+                  {stages.map((stage, index) => (
+                    <div key={index} className="border-l-2 border-green-500 pl-4 py-2 relative">
+                      <div className="absolute -left-2 top-3 h-4 w-4 rounded-full bg-green-500"></div>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                        <h4 className="font-medium">{stage.title || `Stage ${index + 1}`}</h4>
+                        <div className="text-sm text-gray-500">
+                          {stage.startDate && stage.endDate ? (
+                            `${format(stage.startDate, "MMM d")} - ${format(stage.endDate, "MMM d, yyyy")}`
+                          ) : (
+                            "Dates not set"
+                          )}
+                        </div>
+                      </div>
+                      {stage.description && (
+                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{stage.description}</p>
+                      )}
+                      {stage.link && (
+                        <a href={stage.link} target="_blank" rel="noopener noreferrer" className="text-sm text-green-600 hover:underline mt-1 block">
+                          Stage Link
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Submit Button */}
           <div className="flex justify-between mt-6 mb-4">
-            <button className="px-6 w-40 py-2 bg-green-600 text-white rounded-md">
-                Submit Hackathon
+            <button 
+              className="px-6 w-40 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              onClick={() => {
+                console.log("Form submitted with stages:", stages);
+                // Submit your form data here
+              }}
+            >
+              Submit Hackathon
             </button>
           </div>
         </div>

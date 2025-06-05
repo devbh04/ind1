@@ -71,20 +71,14 @@ const AppBar = () => {
           {/* Nav links (lg+) */}
           <div className='hidden lg:flex items-center space-x-2'>
             <Link href='/internship' className='text-black hover:bg-slate-50 hover:border border border-white hover:border-slate-200 p-2 rounded-full'>Internships</Link>
-            <Link href='/' className='text-black hover:bg-slate-50 hover:border border border-white hover:border-slate-200 p-2 rounded-full'>Competitions</Link>
-            <Link href='/' className='text-black hover:bg-slate-50 hover:border border border-white hover:border-slate-200 p-2 rounded-full'>Mentorships</Link>
-            <Link href='/' className='text-black hover:bg-slate-50 hover:border border border-white hover:border-slate-200 p-2 rounded-full'>Courses</Link>
+            <Link href='/courses' className='text-black hover:bg-slate-50 hover:border border border-white hover:border-slate-200 p-2 rounded-full'>Courses</Link>
+            <Link href='/hackathon' className='text-black hover:bg-slate-50 hover:border border border-white hover:border-slate-200 p-2 rounded-full'>Hackathons</Link>
+            <Link href='/mentorship' className='text-black hover:bg-slate-50 hover:border border border-white hover:border-slate-200 p-2 rounded-full'>Mentorships</Link>
             <div className='border-solid border-l border-slate-300 h-10'></div>
           </div>
 
           {/* Icons (always visible) */}
-          <User className="h-6 w-6 lg:h-8 lg:w-8" />
-
-          {/* Host button (lg+) */}
-          <div className='hidden lg:flex items-center'>
-            <div className='border-solid border-l border-slate-300 h-10 mx-2'></div>
-            <Button className='bg-white font-extrabold text-black shadow-none border border-green-600 rounded-full hover:bg-slate-50'>+ Host</Button>
-          </div>
+          <Link href={'/profile'}><User className="h-6 w-6 lg:h-8 lg:w-8" /></Link>
 
           {/* Mobile search icon */}
           <div className='lg:hidden'>
@@ -129,33 +123,26 @@ const AppBar = () => {
               Internships
             </Link>
             <Link 
-              href='/' 
-              className='text-black hover:bg-slate-50 p-3 rounded-lg'
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Competitions
-            </Link>
-            <Link 
-              href='/' 
-              className='text-black hover:bg-slate-50 p-3 rounded-lg'
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Mentorships
-            </Link>
-            <Link 
-              href='/' 
+              href='/courses' 
               className='text-black hover:bg-slate-50 p-3 rounded-lg'
               onClick={() => setMobileMenuOpen(false)}
             >
               Courses
             </Link>
-            <div className='border-t border-slate-300 my-2'></div>
-            <Button 
-              className='bg-white font-extrabold text-black shadow-none border border-green-600 rounded-lg hover:bg-slate-50 w-full mt-2'
+            <Link 
+              href='/hackathon' 
+              className='text-black hover:bg-slate-50 p-3 rounded-lg'
               onClick={() => setMobileMenuOpen(false)}
             >
-              + Host
-            </Button>
+              Hackathons
+            </Link>
+            <Link 
+              href='/mentorship' 
+              className='text-black hover:bg-slate-50 p-3 rounded-lg'
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Mentorships
+            </Link>
           </nav>
         </div>
       </div>

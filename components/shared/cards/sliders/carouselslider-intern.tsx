@@ -1,13 +1,16 @@
+// components/shared/cards/sliders/carouselslider-intern.tsx
+"use client";
+
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel"
-import InternCard from "../interncard"
+} from "@/components/ui/carousel";
+import InternshipCard from "../internshipcard";
 
-export function CarouselSliderIntern() {
+export function CarouselSliderIntern({ internships }) {
   return (
     <Carousel
       opts={{
@@ -16,13 +19,13 @@ export function CarouselSliderIntern() {
       className="w-full p-4 rounded-lg"
     >
       <CarouselContent>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {internships.map((internship) => (
           <CarouselItem
-            key={index}
+            key={internship.id}
             className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
           >
             <div className="p-1">
-              <InternCard />
+              <InternshipCard internship={internship} />
             </div>
           </CarouselItem>
         ))}
@@ -30,5 +33,5 @@ export function CarouselSliderIntern() {
       <CarouselPrevious className="-left-4" />
       <CarouselNext className="-right-4" />
     </Carousel>
-  )
+  );
 }

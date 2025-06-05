@@ -1,8 +1,8 @@
 import React from 'react'
 
-const OptionCard = ({ bg, title, description1, description2, asset }) => {
+const OptionCard = ({ onclick, bg, title, description1, description2, asset }) => {
   return (
-    <div className={`${bg} h-36 rounded-2xl p-3 hover:border hover:border-blue-500 transition-all duration-100 flex justify-between overflow-hidden`}>
+    <div onClick={onclick} className={`${bg} h-36 rounded-2xl p-3 hover:border hover:border-blue-500 transition-all duration-100 flex justify-between overflow-hidden`}>
       <div className='flex flex-col justify-between'>
         <div>
           <h1 className='text-lg md:text-xl font-semibold'>{title}</h1>

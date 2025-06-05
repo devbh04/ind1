@@ -3,12 +3,13 @@ import { useState } from 'react';
 import Head from 'next/head';
 import { Search } from 'lucide-react';
 import HackathonCard from '@/components/shared/cards/hackathoncard';
+import Link from 'next/link';
 
 const HackathonList = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Sample hackathon data
-  const hackathons = [
+  const Hackathons = [
     {
       id: 1,
       title: "Global AI Hackathon 2023",
@@ -59,7 +60,7 @@ const HackathonList = () => {
   ];
 
   // Filter hackathons based on search query
-  const filteredHackathons = hackathons.filter(hackathon => {
+  const filteredHackathons = Hackathons.filter(hackathon => {
     return hackathon.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
            hackathon.organizer.toLowerCase().includes(searchQuery.toLowerCase()) ||
            hackathon.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -67,37 +68,56 @@ const HackathonList = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Head>
         <title>Hackathons | Find Your Next Challenge</title>
         <meta name="description" content="Browse and join exciting hackathons" />
       </Head>
 
-      {/* Hero Section with Search */}
-      <div className="bg-gradient-to-r from-green-600 to-green-800 text-white py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-6">Find Your Next Hackathon Challenge</h1>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Compete, learn, and build amazing projects with developers from around the world.
-          </p>
-          
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
+      {/* Hero Section */}
+      <div className="text-black py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col gap-3 w-full lg:w-3/5">
+            <div className="flex flex-col md:flex-row gap-3 items-center">
+              <h1 className="text-green-800 text-3xl sm:text-4xl md:text-5xl font-extrabold">
+                Hackathons
+              </h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold">
+                To Compete
+              </h1>
             </div>
-            <input
-              type="text"
-              className="block w-full pl-10 pr-3 py-4 border border-transparent rounded-md leading-5 bg-white/20 placeholder-white focus:outline-none focus:ring-2 focus:ring-white focus:border-white sm:text-sm"
-              placeholder="Search hackathons by name, skills, or organizer..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            <p className="p-2 text-black/80 w-full lg:w-3/4">
+              Compete in exciting challenges, showcase your skills, win prizes, and get recognized by top companies.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href={"/host-opportunity"} className="bg-green-800 flex items-center h-10 sm:text-xl text-white border border-white hover:bg-white hover:border-green-800 hover:text-green-800 rounded-full p-4 sm:p-6 transition-all duration-100">
+                + Host Hackathons
+              </Link>
+            </div>
           </div>
+          <img
+            src="/hack.webp" // Update with your actual image path
+            alt="Hackathon illustration"
+            className="w-full lg:w-2/5 mt-6 lg:mt-0"
+          />
+        </div>
+
+        {/* Search Bar - Moved below the hero section */}
+        <div className="max-w-2xl mx-auto relative mt-12">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-black" />
+          </div>
+          <input
+            type="text"
+            className="block w-full pl-10 pr-3 py-4 border border-transparent rounded-full leading-5 bg-gray-700/20 placeholder-black focus:outline-none focus:ring-2 focus:ring-black focus:border-white sm:text-sm"
+            placeholder="Search hackathons by name, skills, or organizer..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Rest of the content remains the same */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Results Count */}
         <div className="mb-6">
