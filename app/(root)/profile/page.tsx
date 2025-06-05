@@ -47,6 +47,175 @@ const formSchema = z
   });
 
 const Profile = () => {
+    const Mentors = [
+    {
+      id: 1,
+      name: "Dr. Sarah Johnson",
+      title: "Senior AI Researcher",
+      organization: "Tech Innovators Inc.",
+      experience: "15+ years",
+      expertise: ["Machine Learning", "Computer Vision", "Python"],
+      rating: 4.9,
+      sessions: 245,
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+      bio: "Former Google AI researcher with 15+ years experience in machine learning and computer vision. Passionate about mentoring the next generation of AI engineers.",
+      availability: "Online",
+      languages: ["English", "Spanish"],
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      title: "Blockchain Architect",
+      organization: "Crypto Foundation",
+      experience: "10 years",
+      expertise: ["Solidity", "Smart Contracts", "DeFi"],
+      rating: 4.8,
+      sessions: 180,
+      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+      bio: "Blockchain expert with extensive experience in building decentralized applications. Mentor to multiple successful blockchain startups.",
+      availability: "San Francisco, CA",
+      languages: ["English", "Mandarin"],
+    },
+    {
+      id: 3,
+      name: "Priya Patel",
+      title: "Sustainability Consultant",
+      organization: "Green Earth Initiative",
+      experience: "12 years",
+      expertise: ["Renewable Energy", "Climate Policy", "ESG"],
+      rating: 4.7,
+      sessions: 150,
+      avatar: "https://randomuser.me/api/portraits/women/63.jpg",
+      bio: "Sustainability leader with experience advising governments and corporations on climate change solutions. Passionate about mentoring young environmentalists.",
+      availability: "Hybrid (New York/Online)",
+      languages: ["English", "Hindi", "French"],
+    },
+  ];
+  const Hackathons = [
+    {
+      id: 1,
+      title: "Global AI Hackathon 2023",
+      type: "AI/ML",
+      organizer: "Tech Innovators Inc.",
+      prizePool: "$50,000",
+      startDate: "2023-11-15",
+      endDate: "2023-11-17",
+      registrationDeadline: "2023-11-10",
+      mode: "online",
+      logo: "https://via.placeholder.com/150",
+      skills: ["Python", "TensorFlow", "PyTorch", "Computer Vision"],
+      participants: 1200,
+      description:
+        "Join the premier AI hackathon to solve real-world problems using machine learning and artificial intelligence.",
+    },
+    {
+      id: 2,
+      title: "Blockchain Builders Challenge",
+      type: "Blockchain",
+      organizer: "Crypto Foundation",
+      prizePool: "$30,000",
+      startDate: "2023-12-05",
+      endDate: "2023-12-07",
+      registrationDeadline: "2023-11-28",
+      mode: "offline",
+      location: "San Francisco, CA",
+      logo: "https://via.placeholder.com/150",
+      skills: ["Solidity", "Ethereum", "Smart Contracts", "Web3"],
+      participants: 850,
+      description:
+        "Build decentralized applications that push the boundaries of blockchain technology.",
+    },
+    {
+      id: 3,
+      title: "Climate Change Hackathon",
+      type: "Sustainability",
+      organizer: "Green Earth Initiative",
+      prizePool: "$25,000",
+      startDate: "2023-10-20",
+      endDate: "2023-10-22",
+      registrationDeadline: "2023-10-15",
+      mode: "hybrid",
+      location: "New York, NY (with online participation)",
+      logo: "https://via.placeholder.com/150",
+      skills: ["Data Analysis", "IoT", "Renewable Energy", "GIS"],
+      participants: 1500,
+      description:
+        "Develop innovative solutions to combat climate change and promote sustainability.",
+    },
+  ];
+  const Internships = [
+    {
+      id: "1",
+      companyName: "Talent Solutions Ltd.",
+      title: "HR Recruitment Intern",
+      category: "Human Resources",
+      workplaceType: "hybrid",
+      location: "Chicago, IL",
+      duration: "3 Months",
+      startDate: "2023-12-01",
+      stipend: {
+        min: 1200,
+        max: 1800,
+      },
+      skills: ["Recruitment", "Screening", "Interviewing"],
+      benefits: {
+        jobOffer: true,
+        certificate: true,
+        lor: true,
+        insurance: false,
+        stipend: true,
+        equipment: false,
+      },
+    },
+  ];
+  const Courses = [
+    {
+      id: 1,
+      title: "Machine Learning Fundamentals",
+      tutors: "Dr. Smith, Prof. Johnson",
+      email: "ml-course@example.com",
+      phone: "+1 (555) 123-4567",
+      courseType: "B.Tech",
+      specialization: "AI & Machine Learning",
+      duration: "4 Months",
+      description:
+        "Learn the core concepts of machine learning including supervised and unsupervised learning, neural networks, and model evaluation techniques. Hands-on projects with real-world datasets.",
+      coverImage: "/L.avif",
+      enrolled: 245,
+      rating: 4.8,
+    },
+    {
+      id: 2,
+      title: "Web Development Bootcamp",
+      tutors: "Alex Chen, Sarah Williams",
+      email: "webdev@example.com",
+      phone: "+1 (555) 987-6543",
+      courseType: "B.Sc",
+      specialization: "Computer Science",
+      duration: "3 Months",
+      description:
+        "Master modern web development with HTML5, CSS3, JavaScript, React, and Node.js. Build portfolio-ready projects and deploy them to the cloud.",
+      coverImage: "/L.avif",
+      enrolled: 312,
+      rating: 4.7,
+    },
+    {
+      id: 3,
+      title: "Advanced Data Structures",
+      tutors: "Dr. Emily White",
+      email: "ds-course@example.com",
+      phone: "+1 (555) 234-5678",
+      courseType: "M.Tech",
+      specialization: "Computer Science",
+      duration: "3 Months",
+      description:
+        "Deep dive into advanced data structures like B-trees, red-black trees, graph algorithms, and their real-world applications in system design.",
+      coverImage: "/L.avif",
+      enrolled: 156,
+      rating: 4.6,
+    },
+  ];
+
   // Refs for each section
   const coursesRef = useRef<HTMLDivElement>(null);
   const internshipsRef = useRef<HTMLDivElement>(null);
@@ -330,7 +499,7 @@ const Profile = () => {
             </svg>
           </Link>
         </div>
-        <CarouselSliderCourse />
+        <CarouselSliderCourse courses={Courses}/>
       </div>
 
       {/* Internships Section */}
@@ -363,7 +532,7 @@ const Profile = () => {
             </svg>
           </Link>
         </div>
-        <CarouselSliderIntern />
+        <CarouselSliderIntern internships={Internships}/>
       </div>
 
       {/* Mentors Section */}
@@ -394,7 +563,7 @@ const Profile = () => {
             </svg>
           </Link>
         </div>
-        <CarouselSliderMentor />
+        <CarouselSliderMentor mentors={Mentors}/>
       </div>
 
       {/* Hackathons Section */}
@@ -427,21 +596,7 @@ const Profile = () => {
             </svg>
           </Link>
         </div>
-        <CarouselSliderHackathon />
-      </div>
-
-      {/* Numbers Section */}
-      <div ref={numbersRef} className="mt-16 pt-4 pb-16">
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-8">
-          Our Impact in Numbers
-        </h1>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          <NumbersCard number={"200"} abb={"K+"} text={"Active Users"} />
-          <NumbersCard number={"5"} abb={"K+"} text={"Opportunities"} />
-          <NumbersCard number={"50"} abb={"K+"} text={"Assessments"} />
-          <NumbersCard number={"500"} abb={"+"} text={"Partners"} />
-          <NumbersCard number={"100"} abb={"+"} text={"Countries"} />
-        </div>
+        <CarouselSliderHackathon hackathons={Hackathons}/>
       </div>
     </div>
   );
