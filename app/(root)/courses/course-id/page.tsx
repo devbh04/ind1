@@ -47,7 +47,8 @@ By the end of this course, you'll have a portfolio of projects demonstrating you
     },
     startDate: '2023-11-15',
     postedDate: '2023-10-01',
-    coverPhoto: '/L.avif'
+    coverPhoto: '/L.avif',
+    courseLink: 'https://google.com',
   };
 
   const formatDate = (dateString: string) => {
@@ -95,9 +96,11 @@ By the end of this course, you'll have a portfolio of projects demonstrating you
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-sm text-gray-500">Posted on {formatDate(course.postedDate)}</p>
-            <Button className="bg-green-600 hover:bg-green-700 rounded-full px-6">
-              Enroll Now
-            </Button>
+            <a href={course.courseLink}>
+              <Button className="bg-green-600 hover:bg-green-700 rounded-full px-6">
+                Enroll Now
+              </Button>
+            </a>
           </div>
         </div>
 
@@ -200,9 +203,11 @@ By the end of this course, you'll have a portfolio of projects demonstrating you
 
         {/* Enroll Button */}
         <div className="flex justify-center mt-8">
-          <Button className="bg-green-600 hover:bg-green-700 rounded-full px-8 py-6 text-lg">
-            Enroll Now
-          </Button>
+          <a href={course.courseLink}>
+            <Button className="bg-green-600 hover:bg-green-700 rounded-full px-8 py-6 text-lg">
+              Enroll Now
+            </Button>
+          </a>
         </div>
       </div>
     </div>

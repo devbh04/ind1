@@ -50,9 +50,9 @@ const MentorRegistrationForm = () => {
           </div>
         </div>
 
-        {/* Profile Link */}
+        {/* Email */}
         <div className="mb-4">
-          <label className="block text-gray-700 mb-2 text-sm md:text-base">Profile Link<span className="text-green-500">*</span> <span className="text-gray-500 text-xs md:text-sm">Note: Once saved, profile link cannot be changed</span></label>
+          <label className="block text-gray-700 mb-2 text-sm md:text-base">Email<span className="text-green-500">*</span></label>
           <div className="flex items-center gap-1">
             <div className="bg-green-50 p-2 md:p-3 h-10 md:h-13">
               <div className="flex items-center">
@@ -63,9 +63,9 @@ const MentorRegistrationForm = () => {
             </div>
             <input
               type="text"
-              name="profileLink"
+              name="email"
               className="flex-grow border border-gray-300 rounded-r-md p-2 md:p-3 text-sm md:text-base"
-              placeholder='username'
+              placeholder='Email'
             />
           </div>
         </div>

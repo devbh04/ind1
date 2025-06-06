@@ -1,10 +1,16 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft } from "lucide-react";
@@ -21,7 +27,9 @@ export default function ApplyPage() {
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Candidate Details</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+              Candidate Details
+            </h1>
           </div>
         </div>
 
@@ -31,22 +39,39 @@ export default function ApplyPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label className="text-sm font-medium mb-2 block">Email*</Label>
-                <Input type="email" placeholder="Enter your email" className="h-10 sm:h-11" />
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="h-10 sm:h-11"
+                />
               </div>
               <div>
-                <Label className="text-sm font-medium mb-2 block">Mobile*</Label>
-                <Input type="tel" placeholder="Enter your mobile number" className="h-10 sm:h-11" />
+                <Label className="text-sm font-medium mb-2 block">
+                  Mobile*
+                </Label>
+                <Input
+                  type="tel"
+                  placeholder="Enter your mobile number"
+                  className="h-10 sm:h-11"
+                />
               </div>
             </div>
 
             {/* Name */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label className="text-sm font-medium mb-2 block">First Name*</Label>
-                <Input placeholder="Enter first name" className="h-10 sm:h-11" />
+                <Label className="text-sm font-medium mb-2 block">
+                  First Name*
+                </Label>
+                <Input
+                  placeholder="Enter first name"
+                  className="h-10 sm:h-11"
+                />
               </div>
               <div>
-                <Label className="text-sm font-medium mb-2 block">Last Name*</Label>
+                <Label className="text-sm font-medium mb-2 block">
+                  Last Name*
+                </Label>
                 <Input placeholder="Enter last name" className="h-10 sm:h-11" />
               </div>
             </div>
@@ -55,13 +80,21 @@ export default function ApplyPage() {
             <div>
               <Label className="text-sm font-medium mb-2 block">Gender*</Label>
               <div className="flex flex-wrap gap-2">
-                {["Female", "Male", "Transgender", "Non-binary", "Prefer not to say"].map((g) => (
+                {[
+                  "Female",
+                  "Male",
+                  "Transgender",
+                  "Non-binary",
+                  "Prefer not to say",
+                ].map((g) => (
                   <Button
                     key={g}
                     type="button"
                     variant={gender === g.toLowerCase() ? "default" : "outline"}
                     className={`rounded-full px-3 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm ${
-                      gender === g.toLowerCase() ? 'bg-green-600 hover:bg-green-700' : 'bg-white hover:bg-gray-50'
+                      gender === g.toLowerCase()
+                        ? "bg-green-600 hover:bg-green-700"
+                        : "bg-white hover:bg-gray-50"
                     }`}
                     onClick={(e) => {
                       e.preventDefault();
@@ -76,21 +109,33 @@ export default function ApplyPage() {
 
             {/* Institute */}
             <div>
-              <Label className="text-sm font-medium mb-2 block">Institute Name*</Label>
-              <Input placeholder="Enter your institute name" className="h-10 sm:h-11" />
+              <Label className="text-sm font-medium mb-2 block">
+                Institute Name*
+              </Label>
+              <Input
+                placeholder="Enter your institute name"
+                className="h-10 sm:h-11"
+              />
             </div>
 
             {/* Type */}
             <div>
               <Label className="text-sm font-medium mb-2 block">Type*</Label>
               <div className="flex flex-wrap gap-2">
-                {["College Students", "Professional", "Fresher", "Recruiter"].map((t) => (
+                {[
+                  "College Students",
+                  "Professional",
+                  "Fresher",
+                  "Recruiter",
+                ].map((t) => (
                   <Button
                     key={t}
                     type="button"
                     variant={type === t.toLowerCase() ? "default" : "outline"}
                     className={`rounded-full px-3 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm ${
-                      type === t.toLowerCase() ? 'bg-green-600 hover:bg-green-700' : 'bg-white hover:bg-gray-50'
+                      type === t.toLowerCase()
+                        ? "bg-green-600 hover:bg-green-700"
+                        : "bg-white hover:bg-gray-50"
                     }`}
                     onClick={(e) => {
                       e.preventDefault();
@@ -106,7 +151,9 @@ export default function ApplyPage() {
             {/* Course Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label className="text-sm font-medium mb-2 block">Course*</Label>
+                <Label className="text-sm font-medium mb-2 block">
+                  Course*
+                </Label>
                 <Select>
                   <SelectTrigger className="h-10 sm:h-11">
                     <SelectValue placeholder="Select your course" />
@@ -120,7 +167,9 @@ export default function ApplyPage() {
                 </Select>
               </div>
               <div>
-                <Label className="text-sm font-medium mb-2 block">Specialization*</Label>
+                <Label className="text-sm font-medium mb-2 block">
+                  Specialization*
+                </Label>
                 <Select>
                   <SelectTrigger className="h-10 sm:h-11">
                     <SelectValue placeholder="Select specialization" />
@@ -137,7 +186,9 @@ export default function ApplyPage() {
 
             {/* Graduation Year */}
             <div>
-              <Label className="text-sm font-medium mb-2 block">Graduating Year*</Label>
+              <Label className="text-sm font-medium mb-2 block">
+                Graduating Year*
+              </Label>
               <div className="flex flex-wrap gap-2">
                 {["2024", "2025", "2026", "2027", "2028"].map((year) => (
                   <Button
@@ -145,7 +196,9 @@ export default function ApplyPage() {
                     type="button"
                     variant={graduationYear === year ? "default" : "outline"}
                     className={`rounded-full px-3 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm ${
-                      graduationYear === year ? 'bg-green-600 hover:bg-green-700' : 'bg-white hover:bg-gray-50'
+                      graduationYear === year
+                        ? "bg-green-600 hover:bg-green-700"
+                        : "bg-white hover:bg-gray-50"
                     }`}
                     onClick={(e) => {
                       e.preventDefault();
@@ -160,7 +213,9 @@ export default function ApplyPage() {
 
             {/* Course Duration */}
             <div>
-              <Label className="text-sm font-medium mb-2 block">Course Duration*</Label>
+              <Label className="text-sm font-medium mb-2 block">
+                Course Duration*
+              </Label>
               <Select>
                 <SelectTrigger className="h-10 sm:h-11">
                   <SelectValue placeholder="Select duration" />
@@ -175,13 +230,17 @@ export default function ApplyPage() {
 
             {/* Differently Abled */}
             <div>
-              <Label className="text-sm font-medium mb-2 block">Differently Abled*</Label>
+              <Label className="text-sm font-medium mb-2 block">
+                Differently Abled*
+              </Label>
               <div className="flex gap-2 sm:gap-4">
                 <Button
                   type="button"
                   variant={!diffAbled ? "default" : "outline"}
                   className={`rounded-full px-4 sm:px-6 h-8 sm:h-9 text-xs sm:text-sm ${
-                    !diffAbled ? 'bg-green-600 hover:bg-green-700' : 'bg-white hover:bg-gray-50'
+                    !diffAbled
+                      ? "bg-green-600 hover:bg-green-700"
+                      : "bg-white hover:bg-gray-50"
                   }`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -194,7 +253,9 @@ export default function ApplyPage() {
                   type="button"
                   variant={diffAbled ? "default" : "outline"}
                   className={`rounded-full px-4 sm:px-6 h-8 sm:h-9 text-xs sm:text-sm ${
-                    diffAbled ? 'bg-green-600 hover:bg-green-700' : 'bg-white hover:bg-gray-50'
+                    diffAbled
+                      ? "bg-green-600 hover:bg-green-700"
+                      : "bg-white hover:bg-gray-50"
                   }`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -208,7 +269,9 @@ export default function ApplyPage() {
 
             {/* Country */}
             <div>
-              <Label className="text-sm font-medium mb-2 block">Country of Residence*</Label>
+              <Label className="text-sm font-medium mb-2 block">
+                Country of Residence*
+              </Label>
               <Select>
                 <SelectTrigger className="h-10 sm:h-11">
                   <SelectValue placeholder="Select your country" />
@@ -222,19 +285,40 @@ export default function ApplyPage() {
               </Select>
             </div>
 
+            <div>
+              <Label className="text-sm font-medium mb-2 block">
+                Resume Link*
+              </Label>
+              <Input
+                type="text"
+                placeholder="Provide your Resume Link"
+                className="h-10 sm:h-11"
+              />
+            </div>
+
             {/* Terms Checkbox */}
             <div className="flex items-start gap-3 pt-2 sm:pt-4">
               <Checkbox id="terms" className="mt-1" />
-              <Label htmlFor="terms" className="text-xs sm:text-sm leading-snug text-gray-600">
-                By registering for this opportunity, you agree to share the data mentioned in this form with the organizer. 
-                <span className="text-green-600 hover:underline cursor-pointer"> Privacy Policy</span>
+              <Label
+                htmlFor="terms"
+                className="text-xs sm:text-sm leading-snug text-gray-600"
+              >
+                By registering for this opportunity, you agree to share the data
+                mentioned in this form with the organizer.
+                <span className="text-green-600 hover:underline cursor-pointer">
+                  {" "}
+                  Privacy Policy
+                </span>
               </Label>
             </div>
           </div>
 
           {/* Form Actions */}
           <div className="flex flex-col-reverse sm:flex-row justify-between gap-3 pt-4 sm:pt-6 border-t">
-            <Button type="submit" className="h-10 sm:h-11 px-4 sm:px-8 rounded-full bg-green-600 hover:bg-green-700 w-full sm:w-auto">
+            <Button
+              type="submit"
+              className="h-10 sm:h-11 px-4 sm:px-8 rounded-full bg-green-600 hover:bg-green-700 w-full sm:w-auto"
+            >
               Save & Continue
             </Button>
           </div>

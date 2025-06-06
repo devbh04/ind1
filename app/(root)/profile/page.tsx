@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Pencil } from "lucide-react";
+import { ArrowRightIcon, Pencil } from "lucide-react";
 
 const formSchema = z
   .object({
@@ -47,7 +47,7 @@ const formSchema = z
   });
 
 const Profile = () => {
-    const Mentors = [
+  const Mentors = [
     {
       id: 1,
       name: "Dr. Sarah Johnson",
@@ -216,6 +216,10 @@ const Profile = () => {
     },
   ];
 
+  const user = {
+    userType: "recruiter",
+  };
+
   // Refs for each section
   const coursesRef = useRef<HTMLDivElement>(null);
   const internshipsRef = useRef<HTMLDivElement>(null);
@@ -258,11 +262,44 @@ const Profile = () => {
 
   return (
     <div className="mx-4 sm:mx-8 md:mx-16 lg:mx-24">
+      <h1 className="flex justify-center pt-4 text-2xl">Only For Recruiters</h1>
+      <div className="flex flex-col sm:flex-row justify-center gap-4 items-center py-4">
+        <Link
+          href={user.userType === "recruiter" ? `/profile/hackathons` : "#"}
+        >
+          <div
+            className={`w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center 
+      ${
+        user.userType === "recruiter"
+          ? "border-transparent text-white bg-red-600 hover:bg-white hover:text-red-600"
+          : "border-gray-300 text-gray-400 bg-gray-100 cursor-not-allowed"
+      }`}
+          >
+            View Hosted Hackathons
+          </div>
+        </Link>
+        <Link
+          href={user.userType === "recruiter" ? `/profile/internships` : "#"}
+        >
+          <div
+            className={`w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center 
+      ${
+        user.userType === "recruiter"
+          ? "border-transparent text-red-600 bg-white hover:bg-red-600 hover:text-white"
+          : "border-gray-300 text-gray-400 bg-gray-100 cursor-not-allowed"
+      }`}
+          >
+            View Posted Internships
+          </div>
+        </Link>
+      </div>
       {/* Hero Section */}
       <div className="flex flex-col lg:flex-row gap-8 mt-8">
         <div className="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Profile Information</h2>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Profile Information
+            </h2>
             <Button
               type="button"
               variant={isEditing ? "destructive" : "outline"}
@@ -273,7 +310,7 @@ const Profile = () => {
               {isEditing ? "Cancel" : "Edit Profile"}
             </Button>
           </div>
-          
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Username */}
@@ -284,11 +321,13 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel className="text-gray-700">Username</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Enter your username" 
-                        {...field} 
+                      <Input
+                        placeholder="Enter your username"
+                        {...field}
                         disabled={!isEditing}
-                        className={`bg-gray-50 ${!isEditing ? "border-none bg-gray-100" : ""}`}
+                        className={`bg-gray-50 ${
+                          !isEditing ? "border-none bg-gray-100" : ""
+                        }`}
                       />
                     </FormControl>
                     <FormMessage />
@@ -309,7 +348,9 @@ const Profile = () => {
                         placeholder="Enter your email"
                         {...field}
                         disabled={!isEditing}
-                        className={`bg-gray-50 ${!isEditing ? "border-none bg-gray-100" : ""}`}
+                        className={`bg-gray-50 ${
+                          !isEditing ? "border-none bg-gray-100" : ""
+                        }`}
                       />
                     </FormControl>
                     <FormMessage />
@@ -323,14 +364,18 @@ const Profile = () => {
                 name="mobile"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-700">Mobile Number</FormLabel>
+                    <FormLabel className="text-gray-700">
+                      Mobile Number
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
                         placeholder="Enter your mobile number"
                         {...field}
                         disabled={!isEditing}
-                        className={`bg-gray-50 ${!isEditing ? "border-none bg-gray-100" : ""}`}
+                        className={`bg-gray-50 ${
+                          !isEditing ? "border-none bg-gray-100" : ""
+                        }`}
                       />
                     </FormControl>
                     <FormMessage />
@@ -351,16 +396,16 @@ const Profile = () => {
                           key={gender}
                           type="button"
                           variant={
-                            field.value === gender
-                              ? "default"
-                              : "outline"
+                            field.value === gender ? "default" : "outline"
                           }
                           disabled={!isEditing}
                           className={`rounded-full px-4 h-9 ${
                             field.value === gender
                               ? "bg-green-600 hover:bg-green-700"
                               : "bg-white hover:bg-gray-50"
-                          } ${!isEditing ? "opacity-70 cursor-not-allowed" : ""}`}
+                          } ${
+                            !isEditing ? "opacity-70 cursor-not-allowed" : ""
+                          }`}
                           onClick={() => field.onChange(gender)}
                         >
                           {gender.charAt(0).toUpperCase() + gender.slice(1)}
@@ -385,7 +430,9 @@ const Profile = () => {
                         placeholder="Enter your password"
                         {...field}
                         disabled={!isEditing}
-                        className={`bg-gray-50 ${!isEditing ? "border-none bg-gray-100" : ""}`}
+                        className={`bg-gray-50 ${
+                          !isEditing ? "border-none bg-gray-100" : ""
+                        }`}
                       />
                     </FormControl>
                     <FormMessage />
@@ -399,14 +446,18 @@ const Profile = () => {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-700">Confirm Password</FormLabel>
+                    <FormLabel className="text-gray-700">
+                      Confirm Password
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         placeholder="Confirm your password"
                         {...field}
                         disabled={!isEditing}
-                        className={`bg-gray-50 ${!isEditing ? "border-none bg-gray-100" : ""}`}
+                        className={`bg-gray-50 ${
+                          !isEditing ? "border-none bg-gray-100" : ""
+                        }`}
                       />
                     </FormControl>
                     <FormMessage />
@@ -499,7 +550,7 @@ const Profile = () => {
             </svg>
           </Link>
         </div>
-        <CarouselSliderCourse courses={Courses}/>
+        <CarouselSliderCourse courses={Courses} />
       </div>
 
       {/* Internships Section */}
@@ -532,7 +583,7 @@ const Profile = () => {
             </svg>
           </Link>
         </div>
-        <CarouselSliderIntern internships={Internships}/>
+        <CarouselSliderIntern internships={Internships} />
       </div>
 
       {/* Mentors Section */}
@@ -563,7 +614,7 @@ const Profile = () => {
             </svg>
           </Link>
         </div>
-        <CarouselSliderMentor mentors={Mentors}/>
+        <CarouselSliderMentor mentors={Mentors} />
       </div>
 
       {/* Hackathons Section */}
@@ -596,7 +647,7 @@ const Profile = () => {
             </svg>
           </Link>
         </div>
-        <CarouselSliderHackathon hackathons={Hackathons}/>
+        <CarouselSliderHackathon hackathons={Hackathons} />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft } from "lucide-react";
 
-export default function ApplyPage() {
+export default function HackathonReg() {
   const [gender, setGender] = useState("male");
   const [type, setType] = useState("college students");
   const [diffAbled, setDiffAbled] = useState(false);

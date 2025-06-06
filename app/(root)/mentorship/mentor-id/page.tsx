@@ -12,7 +12,7 @@ export default function MentorProfile() {
     id: 'mentor123',
     firstName: 'Alex',
     lastName: 'Johnson',
-    profileLink: 'alex-johnson',
+    email: 'adbc@gmail.com',
     gender: 'Male',
     organization: 'Tech Innovators Inc.',
     industry: 'Technology',
@@ -95,14 +95,20 @@ When I'm not coding or mentoring, you can find me contributing to open source pr
                   <Briefcase className="h-4 w-4" />
                   {mentor.workExperience}+ years
                 </Badge>
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <Briefcase className="h-4 w-4" />
+                  {mentor.email}
+                </Badge>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-1 items-end">
             <p className="text-sm text-gray-500">Member since {formatDate(mentor.joinedDate)}</p>
-            <Button className="bg-green-600 hover:bg-green-700 rounded-full px-6">
-              Request Mentorship
-            </Button>
+            <a href={`mailto:${mentor.email}`}>
+              <Button className="bg-green-600 hover:bg-green-700 rounded-full px-6">
+                Request Mentorship
+              </Button>
+            </a>
           </div>
         </div>
 
@@ -204,9 +210,11 @@ When I'm not coding or mentoring, you can find me contributing to open source pr
 
         {/* Request Button */}
         <div className="flex justify-center mt-8">
-          <Button className="bg-green-600 hover:bg-green-700 rounded-full px-8 py-6 text-lg">
-            Request Mentorship
-          </Button>
+          <a href={mentor.email ? `mailto:${mentor.email}` : '#'}>
+            <Button className="bg-green-600 hover:bg-green-700 rounded-full px-8 py-6 text-lg">
+              Request Mentorship
+            </Button>
+          </a>
         </div>
       </div>
     </div>

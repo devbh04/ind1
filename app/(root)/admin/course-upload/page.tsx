@@ -16,7 +16,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft } from "lucide-react";
 
 export default function ApplyPage() {
-
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-4 sm:p-6 lg:p-8">
@@ -36,17 +35,38 @@ export default function ApplyPage() {
               Course Cover Photo <span className="text-red-500">*</span>
             </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center">
-              <img 
-                src={"/L.avif"} 
-                alt="Course Cover Photo" 
+              <img
+                src={"/L.avif"}
+                alt="Course Cover Photo"
                 className="w-32 h-32 object-contain mb-4"
               />
-              <button 
+              <button
                 className="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
                 onClick={() => {}}
               >
                 Upload Cover Photo
               </button>
+            </div>
+          </div>
+          {/* courseLink */}
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2 text-sm md:text-base">
+              Course Link<span className="text-green-500">*</span>
+            </label>
+            <div className="flex items-center gap-1">
+              <div className="bg-green-50 p-2 md:p-3 h-10 md:h-13">
+                <div className="flex items-center">
+                  <div className="bg-green-900 text-white p-1 rounded-full mr-1 w-6 md:w-8 text-center">
+                    <span className="text-xs md:text-base font-bold">un</span>
+                  </div>
+                </div>
+              </div>
+              <input
+                type="text"
+                name="courseLink"
+                className="flex-grow border border-gray-300 rounded-r-md p-2 md:p-3 text-sm md:text-base"
+                placeholder="Course Link"
+              />
             </div>
           </div>
           <div className="grid gap-4 sm:gap-6">
