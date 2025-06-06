@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,12 +13,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
+import { useParams } from "next/navigation";
 
-const CourseDetailsPage = ({ params }: { params: { courseId: string } }) => {
+const CourseDetailsPage = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  const params = useParams();
 
   // Mock data as fallback
   const mockUsers = [
@@ -116,7 +119,7 @@ const CourseDetailsPage = ({ params }: { params: { courseId: string } }) => {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
-          Registered Candidates for Course #{params.courseId}
+          Registered Candidates for Course #{params["course-id"]}
         </h1>
         <div className="relative w-64">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
