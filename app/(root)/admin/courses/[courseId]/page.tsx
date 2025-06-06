@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
 
-const CourseDetailsPage = ({ params }: { params: { "course-id": string } }) => {
+const CourseDetailsPage = ({ params }: { params: { courseId: string } }) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
