@@ -9,6 +9,7 @@ import { CarouselSliderMentor } from "@/components/shared/cards/sliders/carousel
 import NumbersCard from "@/components/shared/cards/numberscard";
 import axios from "axios";
 import { toast } from "sonner";
+import { BASE_URL } from "@/utils/constants";
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -25,7 +26,7 @@ const Home = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:3001/api/v1/internships"
+          `${BASE_URL}/api/v1/internships`
         );
         setInternships(response.data);
       } catch (error) {
@@ -44,7 +45,7 @@ const Home = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/v1/mentors"); // Change this if needed
+        const res = await fetch(`${BASE_URL}/api/v1/mentors`); // Change this if needed
         const data = await res.json();
         setMentors(data);
       } catch (err) {
@@ -62,7 +63,7 @@ const Home = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/v1/courses");
+        const res = await fetch(`${BASE_URL}/api/v1/courses`);
         if (!res.ok) throw new Error("Failed to fetch courses");
         const data = await res.json();
         setCourses(data);
@@ -81,7 +82,7 @@ const Home = () => {
   useEffect(() => {
     const fetchHackathons = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/v1/hackathons");
+        const response = await fetch(`${BASE_URL}/api/v1/hackathons`);
         const data = await response.json();
         setHackathons(data);
       } catch (error) {

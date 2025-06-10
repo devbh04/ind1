@@ -17,6 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { BASE_URL } from "@/utils/constants";
 
 const FindCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -28,7 +29,7 @@ const FindCourses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/v1/courses");
+        const response = await fetch(`${BASE_URL}/api/v1/courses`);
         if (!response.ok) throw new Error("Failed to fetch courses");
         const data = await response.json();
         setCourses(data);
@@ -46,7 +47,7 @@ const FindCourses = () => {
     if (!selectedCourseId) return;
     try {
       const response = await fetch(
-        `http://localhost:3001/api/v1/courses/${selectedCourseId}`,
+        `${BASE_URL}/api/v1/courses/${selectedCourseId}`,
         { method: "DELETE" }
       );
 

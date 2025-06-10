@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { Search } from 'lucide-react';
 import MentorCard from '@/components/shared/cards/mentorcard';
 import Link from 'next/link';
+import { BASE_URL } from '@/utils/constants';
 
 const MentorList = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,7 +14,7 @@ const MentorList = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/v1/mentors'); // Change this if needed
+        const res = await fetch(`${BASE_URL}/api/v1/mentors`); // Change this if needed
         const data = await res.json();
         setMentors(data);
       } catch (err) {

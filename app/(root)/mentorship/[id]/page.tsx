@@ -24,6 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useUserStore } from "@/store/signUpStore";
+import { BASE_URL } from "@/utils/constants";
 
 export default function MentorProfile() {
   const { id } = useParams(); // Assuming you're using a router that provides useParams
@@ -36,7 +37,7 @@ export default function MentorProfile() {
   React.useEffect(() => {
     const fetchMentor = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/v1/mentors/${id}`);
+        const res = await fetch(`${BASE_URL}/api/v1/mentors/${id}`);
         if (!res.ok) throw new Error("Failed to fetch mentor");
         const data = await res.json();
         setMentor(data);
@@ -57,7 +58,7 @@ export default function MentorProfile() {
       const userId = currentUser._id; // Replace with actual user ID from your auth context
 
       const response = await fetch(
-        `http://localhost:3001/api/v1/mentors/${id}/request`,
+        `${BASE_URL}/api/v1/mentors/${id}/request`,
         {
           method: "POST",
           headers: {

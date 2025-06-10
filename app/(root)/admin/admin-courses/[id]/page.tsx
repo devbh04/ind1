@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
 import { useParams } from "next/navigation";
+import { BASE_URL } from "@/utils/constants";
 
 const CourseDetailsPage = () => {
   const [users, setUsers] = useState([]);
@@ -77,7 +78,7 @@ const CourseDetailsPage = () => {
       setIsLoading(true);
       try {
         // First try to fetch from localhost
-        const response = await fetch(`http://localhost:3001/api/v1/courses/${id}/registered-users`);
+        const response = await fetch(`${BASE_URL}/api/v1/courses/${id}/registered-users`);
         if (response.ok) {
           const data = await response.json();
           setUsers(data);

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/signUpStore";
 import { useRouter } from "next/navigation";
+import { BASE_URL } from "@/utils/constants";
 
 const MentorRegistrationForm = () => {
   const router = useRouter();
@@ -76,7 +77,7 @@ const MentorRegistrationForm = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3001/api/v1/mentors", {
+      const res = await fetch(`${BASE_URL}/api/v1/mentors`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { CarouselSliderCourse } from "@/components/shared/cards/sliders/carouselslider-course";
 import CourseCategoryCard from "@/components/shared/cards/coursecategorycard";
 import Link from "next/link";
+import { BASE_URL } from "@/utils/constants";
 
 
 const Courses = () => {
@@ -19,7 +20,7 @@ const Courses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/v1/courses");
+        const res = await fetch(`${BASE_URL}/api/v1/courses`);
         if (!res.ok) throw new Error("Failed to fetch courses");
         const data = await res.json();
         setCourses(data);

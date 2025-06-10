@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/signUpStore";
+import { BASE_URL } from "@/utils/constants";
 
 const HackathonList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,7 +29,7 @@ const HackathonList = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3001/api/v1/hackathons/${currentUser._id}/all`
+          `${BASE_URL}/api/v1/hackathons/${currentUser._id}/all`
         );
         setHackathons(response.data);
         console.log("Posted Hackathons:", response.data);
@@ -122,7 +123,7 @@ const HackathonList = () => {
 
                         try {
                           await axios.delete(
-                            `http://localhost:3001/api/v1/hackathons/delete/${hackathon._id}`
+                            `${BASE_URL}/api/v1/hackathons/delete/${hackathon._id}`
                           );
                           toast.success("Hackathon deleted");
 

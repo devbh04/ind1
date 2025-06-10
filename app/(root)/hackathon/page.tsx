@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import HackathonCard from "@/components/shared/cards/hackathoncard";
 import Link from "next/link";
 import { useUserStore } from "@/store/signUpStore";
+import { BASE_URL } from "@/utils/constants";
 
 const HackathonList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +17,7 @@ const HackathonList = () => {
   useEffect(() => {
     const fetchHackathons = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/v1/hackathons");
+        const response = await fetch(`${BASE_URL}/api/v1/hackathons`);
         const data = await response.json();
         setHackathons(data);
       } catch (error) {

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import { BASE_URL } from "@/utils/constants";
 
 export default function HackathonOpp() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ export default function HackathonOpp() {
     const fetchHackathon = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/v1/hackathons/${id}`
+          `${BASE_URL}/api/v1/hackathons/${id}`
         );
         const data = await response.json();
         setHackathon(data);

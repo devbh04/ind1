@@ -16,6 +16,7 @@ import {
 import { Search, Loader2, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from 'sonner';
+import { BASE_URL } from '@/utils/constants';
 
 interface Candidate {
   _id: string;
@@ -38,7 +39,7 @@ export default function MentorshipCandidatesPage() {
     const fetchRegisteredUsers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/v1/mentors/${id}/registered-users`
+          `${BASE_URL}/api/v1/mentors/${id}/registered-users`
         );
         
         if (response.data.success) {

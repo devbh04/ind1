@@ -21,6 +21,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import MentorCard from "@/components/shared/cards/mentorcard";
+import { BASE_URL } from "@/utils/constants";
 
 const FindMentorship = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +38,7 @@ const FindMentorship = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3001/api/v1/mentors/user/${currentUser._id}`
+          `${BASE_URL}/api/v1/mentors/user/${currentUser._id}`
         );
         setMentorships(response.data);
       } catch (error) {
@@ -59,7 +60,7 @@ const FindMentorship = () => {
     try {
       setIsDeleting(true);
       const response = await axios.delete(
-        `http://localhost:3001/api/v1/mentors/${deleteId}`
+        `${BASE_URL}/api/v1/mentors/${deleteId}`
       );
       
       if (response.data.success) {

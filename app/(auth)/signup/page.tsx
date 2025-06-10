@@ -18,10 +18,11 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/signUpStore";
+import { BASE_URL } from "@/utils/constants";
 
 const formSchema = z
   .object({
-    userType: z.enum(["candidate", "recruiter"]),
+    userType: z.enum(["candidate", "recruiter", "admin"]),
     username: z.string().min(2, {
       message: "Username must be at least 2 characters.",
     }),
@@ -63,7 +64,7 @@ const SignUp = () => {
   async function onSubmit(values) {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/api/v1/auth/signup", {
+      const response = await fetch(`${BASE_URL}/api/v1/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

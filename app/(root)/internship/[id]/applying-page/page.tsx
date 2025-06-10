@@ -18,6 +18,7 @@ import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import { useUserStore } from "@/store/signUpStore";
+import { BASE_URL } from "@/utils/constants";
 
 export default function ApplyPage() {
   const { id } = useParams();
@@ -73,7 +74,7 @@ export default function ApplyPage() {
       };
 
       const { data } = await axios.post(
-        `http://localhost:3001/api/v1/applications/${id}/apply`,
+        `${BASE_URL}/api/v1/applications/${id}/apply`,
         payload,
         {
           withCredentials: true,

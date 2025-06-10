@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useInternshipStore } from "@/store/internshipStore";
 import { useUserStore } from "@/store/signUpStore";
+import { BASE_URL } from '@/utils/constants';
 
 
 const benefitOptions = [
@@ -130,7 +131,7 @@ export default function InternshipPublishing() {
 
       // Save to MongoDB if user is logged in
       if (currentUser?._id) {
-        const response = await fetch(`http://localhost:3001/api/v1/users/${currentUser._id}/internships`, {
+        const response = await fetch(`${BASE_URL}/api/v1/users/${currentUser._id}/internships`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

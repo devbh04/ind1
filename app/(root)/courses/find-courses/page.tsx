@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import CourseCard from "@/components/shared/cards/coursecard";
+import { BASE_URL } from "@/utils/constants";
 
 const FindCourses = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,7 +15,7 @@ const FindCourses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/v1/courses`);
+        const res = await fetch(`${BASE_URL}/api/v1/courses`);
         const data = await res.json();
         setCourses(data);
         console.log("Fetched courses:", data);

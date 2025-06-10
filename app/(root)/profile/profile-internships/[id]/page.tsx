@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { BASE_URL } from '@/utils/constants';
 
 export default function InternshipCandidatesPage() {
   const { id } = useParams(); // Get internship ID from URL
@@ -27,7 +28,7 @@ export default function InternshipCandidatesPage() {
     const fetchApplications = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/v1/applications/internship/${id}/applications`
+          `${BASE_URL}/api/v1/applications/internship/${id}/applications`
         );
         setCandidates(response.data.data);
         console.log('Fetched applications:', response.data.data);

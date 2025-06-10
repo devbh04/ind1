@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
 import axios from "axios";
+import { BASE_URL } from "@/utils/constants";
 
 export default function HackathonParticipantsPage() {
   const { id } = useParams(); // Read ID from URL
@@ -24,7 +25,7 @@ export default function HackathonParticipantsPage() {
     const fetchParticipants = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/v1/hackathons/participants/${id}`
+          `${BASE_URL}/api/v1/hackathons/participants/${id}`
         );
         const data = response.data;
         setTeams(data);

@@ -25,6 +25,7 @@ import { useUserStore } from "@/store/signUpStore";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { BASE_URL } from "@/utils/constants";
 
 // Updated form schema without password fields
 const formSchema = z.object({
@@ -105,7 +106,7 @@ const Profile = () => {
     setIsUpdating(true);
     try {
       const response = await fetch(
-        `http://localhost:3001/api/v1/users/${currentUser._id}`,
+        `${BASE_URL}/api/v1/users/${currentUser._id}`,
         {
           method: "PUT",
           headers: {
@@ -147,7 +148,7 @@ const Profile = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3001/api/v1/users/${currentUser._id}/internships`
+          `${BASE_URL}/api/v1/users/${currentUser._id}/internships`
         );
         setInternships(response.data);
       } catch (error) {
@@ -172,7 +173,7 @@ const Profile = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3001/api/v1/users/${currentUser._id}/registered-internships`
+          `${BASE_URL}/api/v1/users/${currentUser._id}/registered-internships`
         );
         setRegisteredInternships(response.data);
       } catch (error) {
@@ -211,7 +212,7 @@ const Profile = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/v1/mentors/user/${currentUser._id}`
+          `${BASE_URL}/api/v1/mentors/user/${currentUser._id}`
         );
         setMentors(response.data);
       } catch (error) {
@@ -232,7 +233,7 @@ const Profile = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/v1/users/${currentUser._id}/registered-mentorships`
+          `${BASE_URL}/api/v1/users/${currentUser._id}/registered-mentorships`
         );
         setRegisteredMentorships(response.data);
       } catch (error) {
@@ -251,7 +252,7 @@ const Profile = () => {
 
     axios
       .get(
-        `http://localhost:3001/api/v1/users/${currentUser._id}/registered-courses`
+        `${BASE_URL}/api/v1/users/${currentUser._id}/registered-courses`
       )
       .then((res) => {
         setRegisteredCourses(res.data); // Already populated
@@ -272,7 +273,7 @@ const Profile = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/v1/users/${currentUser._id}/posted-hackathons`
+          `${BASE_URL}/api/v1/users/${currentUser._id}/posted-hackathons`
         );
         setPostedHackathons(response.data);
       } catch (error) {
@@ -286,7 +287,7 @@ const Profile = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/v1/users/${currentUser._id}/registered-hackathons`
+          `${BASE_URL}/api/v1/users/${currentUser._id}/registered-hackathons`
         );
         setRegisteredHackathons(response.data);
       } catch (error) {

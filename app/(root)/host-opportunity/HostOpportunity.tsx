@@ -39,6 +39,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/signUpStore";
 import { useRouter } from "next/navigation";
+import { BASE_URL } from "@/utils/constants";
 
 const HostHackathon = () => {
   const router = useRouter();
@@ -124,7 +125,7 @@ const HostHackathon = () => {
   const handleSubmit = async (fD) => {
     console.log("Response:", fD);
     try {
-      const res = await fetch("http://localhost:3001/api/v1/hackathons", {
+      const res = await fetch(`${BASE_URL}/api/v1/hackathons`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

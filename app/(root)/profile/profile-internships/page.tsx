@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { BASE_URL } from "@/utils/constants";
 
 const FindInternship = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,7 +36,7 @@ const FindInternship = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3001/api/v1/users/${currentUser._id}/internships`
+          `${BASE_URL}/api/v1/users/${currentUser._id}/internships`
         );
         setInternships(response.data);
         console.log("Posted Internships:", response.data);
@@ -56,7 +57,7 @@ const FindInternship = () => {
     if (!deleteId) return;
     try {
       const response = await axios.delete(
-        `http://localhost:3001/api/v1/users/${currentUser._id}/internships/${deleteId}`,
+        `${BASE_URL}/api/v1/users/${currentUser._id}/internships/${deleteId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

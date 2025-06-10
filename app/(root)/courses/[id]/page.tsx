@@ -17,6 +17,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/signUpStore";
 import { toast } from "sonner";
+import { BASE_URL } from "@/utils/constants";
 
 export default function CourseDetails() {
   const { id } = useParams();
@@ -25,7 +26,7 @@ export default function CourseDetails() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/v1/courses/${id}`);
+        const res = await fetch(`${BASE_URL}/api/v1/courses/${id}`);
         if (!res.ok) throw new Error("Course not found");
         const data = await res.json();
         setCourse({
@@ -67,7 +68,7 @@ export default function CourseDetails() {
     }
     try {
       const res = await fetch(
-        `http://localhost:3001/api/v1/users/${currentUser._id}/register-course`,
+        `${BASE_URL}/api/v1/users/${currentUser._id}/register-course`,
         {
           method: "PATCH",
           headers: {

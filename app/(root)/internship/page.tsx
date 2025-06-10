@@ -6,6 +6,7 @@ import Link from "next/link";
 import axios from "axios";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/signUpStore";
+import { BASE_URL } from "@/utils/constants";
 
 const Internship = () => {
   const hrRef = useRef<HTMLDivElement>(null);
@@ -25,7 +26,7 @@ const Internship = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:3001/api/v1/internships"
+          `${BASE_URL}/api/v1/internships`
         );
         setInternships(response.data);
       } catch (error) {

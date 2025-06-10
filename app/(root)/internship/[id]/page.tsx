@@ -23,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import axios from "axios";
 import { toast } from "sonner";
+import { BASE_URL } from "@/utils/constants";
 
 export default function InternshipDetails() {
   const { id } = useParams();
@@ -39,7 +40,7 @@ export default function InternshipDetails() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3001/api/v1/internships/${id}`
+          `${BASE_URL}/api/v1/internships/${id}`
         );
         setInternship(response.data);
       } catch (error) {

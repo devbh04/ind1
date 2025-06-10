@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useUserStore } from "@/store/signUpStore"; // Ensure correct path to Zustand store
 import { toast } from "sonner";
+import { BASE_URL } from "@/utils/constants";
 
 export default function HackathonReg() {
   const router = useRouter();
@@ -49,7 +50,7 @@ export default function HackathonReg() {
     }
 
     try {
-      const res = await fetch("http://localhost:3001/api/v1/hackathoncandidate", {
+      const res = await fetch(`${BASE_URL}/api/v1/hackathoncandidate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/signUpStore";
+import { BASE_URL } from "@/utils/constants";
 
 const formSchema = z.object({
   usernameOrEmail: z.string().min(1, {
@@ -45,7 +46,7 @@ const SignIn = () => {
     console.log("Form submitted with values:", values);
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/v1/auth/login', {
+      const response = await fetch(`${BASE_URL}/api/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -17,6 +17,7 @@ import { useUserStore } from "@/store/signUpStore";
 
 import { toast } from "sonner"; // Import toast from sonner
 import { useRouter } from "next/navigation";
+import { BASE_URL } from "@/utils/constants";
 
 export default function ApplyPage() {
   const router = useRouter();
@@ -59,7 +60,7 @@ export default function ApplyPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/v1/courses", {
+      const response = await fetch(`${BASE_URL}/api/v1/courses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import InternshipCard from "@/components/shared/cards/internshipcard";
 import axios from "axios";
 import { toast } from "sonner";
+import { BASE_URL } from "@/utils/constants";
 
 const FindInternship = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,7 +18,7 @@ const FindInternship = () => {
     const fetchInternships = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:3001/api/v1/internships');
+        const response = await axios.get(`${BASE_URL}/api/v1/internships`);
         setInternships(response.data);
       } catch (error) {
         console.error("Error fetching internships:", error);
