@@ -20,7 +20,7 @@ export function CarouselSliderHackathon({ hackathons }) {
     >
       <CarouselContent>
         {hackathons.map((hackathon) => (
-          <CarouselItem key={hackathon.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+          <CarouselItem key={hackathon._id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
             <div className="p-1">
               <HackathonCard hackathon={hackathon} />
             </div>

@@ -1,5 +1,7 @@
 "use client";
-
+import { useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import axios from 'axios';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,56 +16,52 @@ import {
 import { Search } from "lucide-react";
 import { useState } from "react";
 
-// Mock data - replace with actual API calls
-const registeredCandidates = [
-  {
-    id: 1,
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    mobile: "9876543210",
-    gender: "Male",
-    institute: "IIT Bombay",
-    type: "College Student",
-    course: "B.Tech",
-    specialization: "Computer Science",
-    graduationYear: "2025",
-    courseDuration: "4 Years",
-    diffAbled: false,
-    country: "India",
-    resumeLink: "https://example.com/resume/john_doe",
-  },
-  {
-    id: 2,
-    firstName: "Jane",
-    lastName: "Smith",
-    email: "jane.smith@example.com",
-    mobile: "8765432109",
-    gender: "Female",
-    institute: "NIT Delhi",
-    type: "College Student",
-    course: "B.Sc",
-    specialization: "Data Science",
-    graduationYear: "2024",
-    courseDuration: "3 Years",
-    diffAbled: true,
-    country: "India",
-    resumeLink: "https://example.com/resume/jane_smith",
-  },
-  // Add more mock data as needed
-];
-
 export default function InternshipCandidatesPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const { id } = useParams(); // Get internship ID from URL
+  const [searchTerm, setSearchTerm] = useState('');
+  const [candidates, setCandidates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredCandidates = registeredCandidates.filter(
-    (candidate) =>
-      candidate.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.institute.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.course.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/applications/internship/${id}/applications`
+        );
+        setCandidates(response.data.data);
+        console.log('Fetched applications:', response.data.data);
+        console.log('Fetched candidates:', candidates);
+      } catch (err) {
+        setError(err.response?.data?.error || 'Failed to fetch applications');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApplications();
+  }, [id]);
+  
+
+  const filteredCandidates = candidates.filter((candidate) => {
+  const firstName = candidate.firstName;
+  const lastName = candidate.lastName;
+  const email = candidate.email;
+  const institute = candidate.institute;
+  const course = candidate.course;
+
+  return (
+    firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    institute.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.toLowerCase().includes(searchTerm.toLowerCase())
   );
+});
+
+
+  if (loading) return <div>Loading applications...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
@@ -72,10 +70,10 @@ export default function InternshipCandidatesPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-              Registered Candidates for Internship XYZ
+              Registered Candidates for Internship
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              View and manage all candidates who have applied for this internship
+              {filteredCandidates.length} candidates found
             </p>
           </div>
           
@@ -107,7 +105,7 @@ export default function InternshipCandidatesPage() {
             <TableBody>
               {filteredCandidates.length > 0 ? (
                 filteredCandidates.map((candidate) => (
-                  <TableRow key={candidate.id}>
+                  <TableRow key={candidate._id}>
                     <TableCell className="font-medium">
                       {candidate.firstName} {candidate.lastName}
                       <div className="text-sm text-gray-500">
@@ -144,7 +142,7 @@ export default function InternshipCandidatesPage() {
                     <TableCell className="text-right">
                       <div className="flex flex-col items-end gap-2">
                         <a
-                          href={`mailto:${candidate.email}`}
+                          href={`mailto:${candidate.applicant.email}`}
                           className="text-sm text-blue-600 hover:underline"
                         >
                           <Button variant="outline" size="sm">
@@ -174,24 +172,6 @@ export default function InternshipCandidatesPage() {
               )}
             </TableBody>
           </Table>
-        </div>
-
-        {/* Pagination would go here */}
-        <div className="flex justify-end mt-4">
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              1
-            </Button>
-            <Button variant="outline" size="sm">
-              2
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-            </Button>
-          </div>
         </div>
       </div>
     </div>

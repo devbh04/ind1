@@ -1,77 +1,61 @@
-"use client"
-import { useState } from 'react';
-import Head from 'next/head';
-import { Search } from 'lucide-react';
-import HackathonCard from '@/components/shared/cards/hackathoncard';
-import Link from 'next/link';
+"use client";
+import { useEffect, useState } from "react";
+import Head from "next/head";
+import { Search } from "lucide-react";
+import HackathonCard from "@/components/shared/cards/hackathoncard";
+import Link from "next/link";
+import { useUserStore } from "@/store/signUpStore";
 
 const HackathonList = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const { currentUser } = useUserStore();
 
-  // Sample hackathon data
-  const Hackathons = [
-    {
-      id: 1,
-      title: "Global AI Hackathon 2023",
-      type: "AI/ML",
-      organizer: "Tech Innovators Inc.",
-      prizePool: "$50,000",
-      startDate: "2023-11-15",
-      endDate: "2023-11-17",
-      registrationDeadline: "2023-11-10",
-      mode: "online",
-      logo: "https://via.placeholder.com/150",
-      skills: ["Python", "TensorFlow", "PyTorch", "Computer Vision"],
-      participants: 1200,
-      description: "Join the premier AI hackathon to solve real-world problems using machine learning and artificial intelligence."
-    },
-    {
-      id: 2,
-      title: "Blockchain Builders Challenge",
-      type: "Blockchain",
-      organizer: "Crypto Foundation",
-      prizePool: "$30,000",
-      startDate: "2023-12-05",
-      endDate: "2023-12-07",
-      registrationDeadline: "2023-11-28",
-      mode: "offline",
-      location: "San Francisco, CA",
-      logo: "https://via.placeholder.com/150",
-      skills: ["Solidity", "Ethereum", "Smart Contracts", "Web3"],
-      participants: 850,
-      description: "Build decentralized applications that push the boundaries of blockchain technology."
-    },
-    {
-      id: 3,
-      title: "Climate Change Hackathon",
-      type: "Sustainability",
-      organizer: "Green Earth Initiative",
-      prizePool: "$25,000",
-      startDate: "2023-10-20",
-      endDate: "2023-10-22",
-      registrationDeadline: "2023-10-15",
-      mode: "hybrid",
-      location: "New York, NY (with online participation)",
-      logo: "https://via.placeholder.com/150",
-      skills: ["Data Analysis", "IoT", "Renewable Energy", "GIS"],
-      participants: 1500,
-      description: "Develop innovative solutions to combat climate change and promote sustainability."
-    }
-  ];
+  const [hackathons, setHackathons] = useState([]);
+  const [hloading, setHLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHackathons = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/v1/hackathons");
+        const data = await response.json();
+        setHackathons(data);
+      } catch (error) {
+        console.error("Failed to fetch hackathons:", error);
+      } finally {
+        setHLoading(false);
+      }
+    };
+
+    fetchHackathons();
+  }, []);
 
   // Filter hackathons based on search query
-  const filteredHackathons = Hackathons.filter(hackathon => {
-    return hackathon.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           hackathon.organizer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           hackathon.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           hackathon.skills.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredHackathons = hackathons.filter((hackathon) => {
+    // Skip if hackathon is null/undefined or if search query is empty
+    if (!hackathon || !searchQuery) return true;
+
+    // Safely access properties with optional chaining and provide fallbacks
+    const title = hackathon.hackathonTitle?.toLowerCase() || "";
+    const organizer = hackathon.organization?.toLowerCase() || "";
+    const type = hackathon.hackathonType?.toLowerCase() || "";
+    const skills = hackathon.technicalSkills?.map((skill) => skill?.toLowerCase()) || [];
+
+    return (
+      title.includes(searchQuery.toLowerCase()) ||
+      organizer.includes(searchQuery.toLowerCase()) ||
+      type.includes(searchQuery.toLowerCase()) ||
+      skills.some((skill) => skill.includes(searchQuery.toLowerCase()))
+    );
   });
 
   return (
     <div className="min-h-screen bg-white">
       <Head>
         <title>Hackathons | Find Your Next Challenge</title>
-        <meta name="description" content="Browse and join exciting hackathons" />
+        <meta
+          name="description"
+          content="Browse and join exciting hackathons"
+        />
       </Head>
 
       {/* Hero Section */}
@@ -87,12 +71,18 @@ const HackathonList = () => {
               </h1>
             </div>
             <p className="p-2 text-black/80 w-full lg:w-3/4">
-              Compete in exciting challenges, showcase your skills, win prizes, and get recognized by top companies.
+              Compete in exciting challenges, showcase your skills, win prizes,
+              and get recognized by top companies.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href={"/host-opportunity"} className="bg-green-800 flex items-center h-10 sm:text-xl text-white border border-white hover:bg-white hover:border-green-800 hover:text-green-800 rounded-full p-4 sm:p-6 transition-all duration-100">
+            {(currentUser.userType === "recruiter" || currentUser.userType === "admin") &&
+              <Link
+                href={"/host-opportunity"}
+                className="bg-green-800 flex items-center h-10 sm:text-xl text-white border border-white hover:bg-white hover:border-green-800 hover:text-green-800 rounded-full p-4 sm:p-6 transition-all duration-100"
+              >
                 + Host Hackathons
               </Link>
+  }
             </div>
           </div>
           <img
@@ -122,14 +112,16 @@ const HackathonList = () => {
         {/* Results Count */}
         <div className="mb-6">
           <h2 className="text-lg font-medium text-gray-900">
-            {filteredHackathons.length} {filteredHackathons.length === 1 ? 'Hackathon' : 'Hackathons'} Available
+            {filteredHackathons.length}{" "}
+            {filteredHackathons.length === 1 ? "Hackathon" : "Hackathons"}{" "}
+            Available
           </h2>
         </div>
 
         {/* Hackathon Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredHackathons.map((hackathon) => (
-            <HackathonCard key={hackathon.id} hackathon={hackathon} />
+            <HackathonCard key={hackathon._id} hackathon={hackathon} />
           ))}
         </div>
 
@@ -151,7 +143,9 @@ const HackathonList = () => {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h3 className="mt-2 text-lg font-medium text-gray-900">No hackathons found</h3>
+            <h3 className="mt-2 text-lg font-medium text-gray-900">
+              No hackathons found
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
               Try adjusting your search query to find what you're looking for.
             </p>

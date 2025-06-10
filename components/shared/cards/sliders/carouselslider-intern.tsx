@@ -21,7 +21,7 @@ export function CarouselSliderIntern({ internships }) {
       <CarouselContent>
         {internships.map((internship) => (
           <CarouselItem
-            key={internship.id}
+            key={internship._id}
             className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
           >
             <div className="p-1">

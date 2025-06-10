@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -18,8 +17,8 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/signUpStore";
 
-// Form validation schema
 const formSchema = z
   .object({
     userType: z.enum(["candidate", "recruiter"]),
@@ -45,7 +44,10 @@ const formSchema = z
 
 const SignUp = () => {
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [isLoading, setIsLoading] = useState(false);
+  const { addUser, setCurrentUser } = useUserStore();
+
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       userType: "candidate",
@@ -58,14 +60,52 @@ const SignUp = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    toast.success("Redirecting please wait. Account created successfully!", {
-      description: `Welcome ${values.username} (${values.userType})`,
-    });
-    setTimeout(() => {
-      router.push("/");
-    }, 3000);
-    console.log(values);
+  async function onSubmit(values) {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:3001/api/v1/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Signup failed");
+      }
+
+      // Create user object for store
+      const userData = {
+        _id: data.user.id, // MongoDB _id
+        ...data.user,
+        token: data.token,
+      };
+
+      // Update store
+      addUser(userData);
+      setCurrentUser(userData);
+
+      // Store token and user ID in localStorage
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("userId", data.user.id); // Store the ID separately if needed
+
+      toast.success("Account created successfully!", {
+        description: `Welcome ${values.username} (${values.userType})`,
+      });
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
+    } catch (error) {
+      toast.error("Signup failed", {
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -80,7 +120,7 @@ const SignUp = () => {
           {/* Left div - visible only on lg screens and up (1024px+) */}
           <div className="hidden text-center lg:block w-1/3 bg-gradient-to-r from-green-600 to-green-800 text-white py-16 px-4 sm:px-6 lg:px-8 flex-col justify-center">
             <div className="flex justify-center p-2 rounded-xl drop-shadow-2xl ring-2 ring-green-700 bg-gradient-to-r from-green-50 to-green-200">
-                <img src="/unstop-logo.svg" alt="Logo" className="w-32" />
+              <img src="/unstop-logo.svg" alt="Logo" className="w-32" />
             </div>
             <img src="/learn.webp" alt="Logo" className="p-4" />
             <h2 className="text-2xl font-bold mb-4">Create Your Account</h2>
@@ -212,25 +252,21 @@ const SignUp = () => {
                       <FormItem>
                         <FormLabel>Gender</FormLabel>
                         <div className="flex flex-wrap gap-2">
-                          {["Male", "Female", "Other"].map((gender) => (
+                          {["male", "female", "other"].map((gender) => (
                             <Button
                               key={gender}
                               type="button"
                               variant={
-                                field.value === gender.toLowerCase()
-                                  ? "default"
-                                  : "outline"
+                                field.value === gender ? "default" : "outline"
                               }
                               className={`rounded-full px-4 h-9 ${
-                                field.value === gender.toLowerCase()
+                                field.value === gender
                                   ? "bg-green-600 hover:bg-green-700"
                                   : "bg-white hover:bg-gray-50"
                               }`}
-                              onClick={() =>
-                                field.onChange(gender.toLowerCase())
-                              }
+                              onClick={() => field.onChange(gender)}
                             >
-                              {gender}
+                              {gender.charAt(0).toUpperCase() + gender.slice(1)}
                             </Button>
                           ))}
                         </div>
@@ -277,12 +313,13 @@ const SignUp = () => {
                     )}
                   />
 
-                    <Button
-                      type="submit"
-                      className="w-full bg-green-600 hover:bg-green-700"
-                      >
-                      Create Account
-                    </Button>
+                  <Button
+                    type="submit"
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Creating account..." : "Create Account"}
+                  </Button>
                 </form>
               </Form>
             </div>

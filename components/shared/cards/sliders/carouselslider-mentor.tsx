@@ -18,7 +18,7 @@ export function CarouselSliderMentor({mentors}) {
       >
         <CarouselContent>
           {mentors.map((mentor) => (
-            <CarouselItem key={mentor.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+            <CarouselItem key={mentor._id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
               <div className="p-1">
                 <MentorCard mentor={mentor} />
               </div>

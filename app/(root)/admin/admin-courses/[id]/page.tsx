@@ -21,7 +21,7 @@ const CourseDetailsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const params = useParams();
+  const {id} = useParams();
 
   // Mock data as fallback
   const mockUsers = [
@@ -77,7 +77,7 @@ const CourseDetailsPage = () => {
       setIsLoading(true);
       try {
         // First try to fetch from localhost
-        const response = await fetch('http://localhost:3000/api/users');
+        const response = await fetch(`http://localhost:3001/api/v1/courses/${id}/registered-users`);
         if (response.ok) {
           const data = await response.json();
           setUsers(data);
@@ -119,7 +119,7 @@ const CourseDetailsPage = () => {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
-          Registered Candidates for Course #{params["course-id"]}
+          Registered Candidates for Course 
         </h1>
         <div className="relative w-64">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -151,19 +151,17 @@ const CourseDetailsPage = () => {
               <TableHead>Mobile</TableHead>
               <TableHead>Gender</TableHead>
               <TableHead>User Type</TableHead>
-              <TableHead>Registration Date</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredUsers.map((user) => (
-              <TableRow key={user.id}>
+              <TableRow key={user._id}>
                 <TableCell className="font-medium">{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.mobile}</TableCell>
                 <TableCell className="capitalize">{user.gender}</TableCell>
                 <TableCell className="capitalize">{user.userType}</TableCell>
-                <TableCell>{user.registrationDate}</TableCell>
                 <TableCell>
                   <Button variant="outline" size="sm" asChild>
                     <a href={`mailto:${user.email}`}>Send Email</a>

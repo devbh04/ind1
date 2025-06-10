@@ -1,13 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { CarouselSliderCourse } from "@/components/shared/cards/sliders/carouselslider-course";
 import { CarouselSliderHackathon } from "@/components/shared/cards/sliders/carouselslider-hackathon";
 import { CarouselSliderIntern } from "@/components/shared/cards/sliders/carouselslider-intern";
 import { CarouselSliderMentor } from "@/components/shared/cards/sliders/carouselslider-mentor";
-import NumbersCard from "@/components/shared/cards/numberscard";
 import ProfileCategoryCard from "@/components/shared/cards/profilecategorycard";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
@@ -21,214 +20,50 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { ArrowRightIcon, Pencil } from "lucide-react";
+import { ArrowRightIcon, Pencil, LogOut } from "lucide-react";
+import { useUserStore } from "@/store/signUpStore";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
-const formSchema = z
-  .object({
-    userType: z.enum(["candidate", "recruiter"]),
-    username: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
-    mobile: z.string().min(10, {
-      message: "Please enter a valid mobile number.",
-    }),
-    gender: z.string(),
-    password: z.string().min(8, {
-      message: "Password must be at least 8 characters.",
-    }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+// Updated form schema without password fields
+const formSchema = z.object({
+  userType: z.enum(["candidate", "recruiter"]),
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  mobile: z.string().min(10, {
+    message: "Please enter a valid mobile number.",
+  }),
+  gender: z.string(),
+});
 
 const Profile = () => {
-  const Mentors = [
-    {
-      id: 1,
-      name: "Dr. Sarah Johnson",
-      title: "Senior AI Researcher",
-      organization: "Tech Innovators Inc.",
-      experience: "15+ years",
-      expertise: ["Machine Learning", "Computer Vision", "Python"],
-      rating: 4.9,
-      sessions: 245,
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-      bio: "Former Google AI researcher with 15+ years experience in machine learning and computer vision. Passionate about mentoring the next generation of AI engineers.",
-      availability: "Online",
-      languages: ["English", "Spanish"],
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      title: "Blockchain Architect",
-      organization: "Crypto Foundation",
-      experience: "10 years",
-      expertise: ["Solidity", "Smart Contracts", "DeFi"],
-      rating: 4.8,
-      sessions: 180,
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-      bio: "Blockchain expert with extensive experience in building decentralized applications. Mentor to multiple successful blockchain startups.",
-      availability: "San Francisco, CA",
-      languages: ["English", "Mandarin"],
-    },
-    {
-      id: 3,
-      name: "Priya Patel",
-      title: "Sustainability Consultant",
-      organization: "Green Earth Initiative",
-      experience: "12 years",
-      expertise: ["Renewable Energy", "Climate Policy", "ESG"],
-      rating: 4.7,
-      sessions: 150,
-      avatar: "https://randomuser.me/api/portraits/women/63.jpg",
-      bio: "Sustainability leader with experience advising governments and corporations on climate change solutions. Passionate about mentoring young environmentalists.",
-      availability: "Hybrid (New York/Online)",
-      languages: ["English", "Hindi", "French"],
-    },
-  ];
-  const Hackathons = [
-    {
-      id: 1,
-      title: "Global AI Hackathon 2023",
-      type: "AI/ML",
-      organizer: "Tech Innovators Inc.",
-      prizePool: "$50,000",
-      startDate: "2023-11-15",
-      endDate: "2023-11-17",
-      registrationDeadline: "2023-11-10",
-      mode: "online",
-      logo: "https://via.placeholder.com/150",
-      skills: ["Python", "TensorFlow", "PyTorch", "Computer Vision"],
-      participants: 1200,
-      description:
-        "Join the premier AI hackathon to solve real-world problems using machine learning and artificial intelligence.",
-    },
-    {
-      id: 2,
-      title: "Blockchain Builders Challenge",
-      type: "Blockchain",
-      organizer: "Crypto Foundation",
-      prizePool: "$30,000",
-      startDate: "2023-12-05",
-      endDate: "2023-12-07",
-      registrationDeadline: "2023-11-28",
-      mode: "offline",
-      location: "San Francisco, CA",
-      logo: "https://via.placeholder.com/150",
-      skills: ["Solidity", "Ethereum", "Smart Contracts", "Web3"],
-      participants: 850,
-      description:
-        "Build decentralized applications that push the boundaries of blockchain technology.",
-    },
-    {
-      id: 3,
-      title: "Climate Change Hackathon",
-      type: "Sustainability",
-      organizer: "Green Earth Initiative",
-      prizePool: "$25,000",
-      startDate: "2023-10-20",
-      endDate: "2023-10-22",
-      registrationDeadline: "2023-10-15",
-      mode: "hybrid",
-      location: "New York, NY (with online participation)",
-      logo: "https://via.placeholder.com/150",
-      skills: ["Data Analysis", "IoT", "Renewable Energy", "GIS"],
-      participants: 1500,
-      description:
-        "Develop innovative solutions to combat climate change and promote sustainability.",
-    },
-  ];
-  const Internships = [
-    {
-      id: "1",
-      companyName: "Talent Solutions Ltd.",
-      title: "HR Recruitment Intern",
-      category: "Human Resources",
-      workplaceType: "hybrid",
-      location: "Chicago, IL",
-      duration: "3 Months",
-      startDate: "2023-12-01",
-      stipend: {
-        min: 1200,
-        max: 1800,
-      },
-      skills: ["Recruitment", "Screening", "Interviewing"],
-      benefits: {
-        jobOffer: true,
-        certificate: true,
-        lor: true,
-        insurance: false,
-        stipend: true,
-        equipment: false,
-      },
-    },
-  ];
-  const Courses = [
-    {
-      id: 1,
-      title: "Machine Learning Fundamentals",
-      tutors: "Dr. Smith, Prof. Johnson",
-      email: "ml-course@example.com",
-      phone: "+1 (555) 123-4567",
-      courseType: "B.Tech",
-      specialization: "AI & Machine Learning",
-      duration: "4 Months",
-      description:
-        "Learn the core concepts of machine learning including supervised and unsupervised learning, neural networks, and model evaluation techniques. Hands-on projects with real-world datasets.",
-      coverImage: "/L.avif",
-      enrolled: 245,
-      rating: 4.8,
-    },
-    {
-      id: 2,
-      title: "Web Development Bootcamp",
-      tutors: "Alex Chen, Sarah Williams",
-      email: "webdev@example.com",
-      phone: "+1 (555) 987-6543",
-      courseType: "B.Sc",
-      specialization: "Computer Science",
-      duration: "3 Months",
-      description:
-        "Master modern web development with HTML5, CSS3, JavaScript, React, and Node.js. Build portfolio-ready projects and deploy them to the cloud.",
-      coverImage: "/L.avif",
-      enrolled: 312,
-      rating: 4.7,
-    },
-    {
-      id: 3,
-      title: "Advanced Data Structures",
-      tutors: "Dr. Emily White",
-      email: "ds-course@example.com",
-      phone: "+1 (555) 234-5678",
-      courseType: "M.Tech",
-      specialization: "Computer Science",
-      duration: "3 Months",
-      description:
-        "Deep dive into advanced data structures like B-trees, red-black trees, graph algorithms, and their real-world applications in system design.",
-      coverImage: "/L.avif",
-      enrolled: 156,
-      rating: 4.6,
-    },
-  ];
-
-  const user = {
-    userType: "recruiter",
-  };
+  const { currentUser, updateUser, logout } = useUserStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [internships, setInternships] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [mentors, setMentors] = useState([]);
 
   // Refs for each section
-  const coursesRef = useRef<HTMLDivElement>(null);
-  const internshipsRef = useRef<HTMLDivElement>(null);
-  const mentorsRef = useRef<HTMLDivElement>(null);
-  const hackathonsRef = useRef<HTMLDivElement>(null);
-  const numbersRef = useRef<HTMLDivElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const coursesRef = useRef(null);
+  const internshipsRef = useRef(null);
+  const mentorsRef = useRef(null);
+  const hackathonsRef = useRef(null);
+  const numbersRef = useRef(null);
 
-  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+  // Wait until after hydration to show the UI
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  const scrollToSection = (ref) => {
     if (ref.current) {
       const appBarHeight = 96; // Adjust based on your header height
       const elementPosition = ref.current.getBoundingClientRect().top;
@@ -242,7 +77,7 @@ const Profile = () => {
     }
   };
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       userType: "candidate",
@@ -250,49 +85,296 @@ const Profile = () => {
       email: "",
       mobile: "",
       gender: "male",
-      password: "",
-      confirmPassword: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    setIsEditing(false); // Disable editing after submission
+  // Update form values when currentUser changes
+  useEffect(() => {
+    if (currentUser) {
+      form.reset({
+        userType: currentUser.userType,
+        username: currentUser.username,
+        email: currentUser.email,
+        mobile: currentUser.mobile,
+        gender: currentUser.gender,
+      });
+    }
+  }, [currentUser, form]);
+
+  async function onSubmit(values) {
+    setIsUpdating(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/v1/users/${currentUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          body: JSON.stringify(values),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Update failed");
+      }
+
+      // Update store with new user data
+      updateUser({
+        ...currentUser,
+        ...data.user,
+      });
+
+      toast.success("Profile updated successfully!");
+      setIsEditing(false);
+    } catch (error) {
+      toast.error("Update failed", {
+        description: error.message,
+      });
+    } finally {
+      setIsUpdating(false);
+    }
+  }
+
+  // Replace the existing internships useEffect with this:
+  useEffect(() => {
+    const fetchPostedInternships = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/users/${currentUser._id}/internships`
+        );
+        setInternships(response.data);
+      } catch (error) {
+        console.error("Error fetching posted internships:", error);
+        toast.error("Failed to load posted internships");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPostedInternships();
+  }, [currentUser]);
+
+  // Add this state for registered internships
+  const [registeredInternships, setRegisteredInternships] = useState([]);
+
+  // Add this useEffect to fetch registered internships
+  useEffect(() => {
+    const fetchRegisteredInternships = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/users/${currentUser._id}/registered-internships`
+        );
+        setRegisteredInternships(response.data);
+      } catch (error) {
+        console.error("Error fetching registered internships:", error);
+        toast.error("Failed to load registered internships");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRegisteredInternships();
+  }, [currentUser]);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/signin");
+    toast.success("Logged out successfully!");
+  };
+
+  const handleCancel = () => {
+    if (currentUser) {
+      form.reset({
+        userType: currentUser.userType,
+        username: currentUser.username,
+        email: currentUser.email,
+        mobile: currentUser.mobile,
+        gender: currentUser.gender,
+      });
+    }
+    setIsEditing(false);
+    toast.info("Changes discarded");
+  };
+  useEffect(() => {
+    const fetchMentors = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/mentors/user/${currentUser._id}`
+        );
+        setMentors(response.data);
+      } catch (error) {
+        console.error("Error fetching mentors:", error);
+        toast.error("Failed to load mentors");
+      }
+    };
+
+    fetchMentors();
+  }, [currentUser]);
+
+  const [registeredMentorships, setRegisteredMentorships] = useState([]);
+
+  // Fetch registered mentorships
+  useEffect(() => {
+    const fetchRegisteredMentorships = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/users/${currentUser._id}/registered-mentorships`
+        );
+        setRegisteredMentorships(response.data);
+      } catch (error) {
+        console.error("Error fetching registered mentorships:", error);
+        toast.error("Failed to load registered mentorships");
+      }
+    };
+
+    fetchRegisteredMentorships();
+  }, [currentUser]);
+
+  const [registeredCourses, setRegisteredCourses] = useState([]);
+
+  useEffect(() => {
+    if (!currentUser?._id) return;
+
+    axios
+      .get(
+        `http://localhost:3001/api/v1/users/${currentUser._id}/registered-courses`
+      )
+      .then((res) => {
+        setRegisteredCourses(res.data); // Already populated
+      })
+      .catch((err) => {
+        console.error("Error fetching registered courses:", err);
+        toast.error("Could not load registered courses");
+      });
+  }, [currentUser]);
+
+  const [postedHackathons, setPostedHackathons] = useState([]);
+  const [registeredHackathons, setRegisteredHackathons] = useState([]);
+
+  // Add these useEffect hooks to fetch hackathons data
+  useEffect(() => {
+    const fetchPostedHackathons = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/users/${currentUser._id}/posted-hackathons`
+        );
+        setPostedHackathons(response.data);
+      } catch (error) {
+        console.error("Error fetching posted hackathons:", error);
+        toast.error("Failed to load posted hackathons");
+      }
+    };
+
+    const fetchRegisteredHackathons = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/users/${currentUser._id}/registered-hackathons`
+        );
+        setRegisteredHackathons(response.data);
+      } catch (error) {
+        console.error("Error fetching registered hackathons:", error);
+        toast.error("Failed to load registered hackathons");
+      }
+    };
+
+    fetchPostedHackathons();
+    fetchRegisteredHackathons();
+  }, [currentUser]);
+
+  if (!isHydrated) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-2xl font-bold mb-4">No user logged in</h1>
+        <Link href="/signin">
+          <Button className="bg-green-600 hover:bg-green-700">Sign In</Button>
+        </Link>
+      </div>
+    );
   }
 
   return (
     <div className="mx-4 sm:mx-8 md:mx-16 lg:mx-24">
-      <h1 className="flex justify-center pt-4 text-2xl">Only For Recruiters</h1>
-      <div className="flex flex-col sm:flex-row justify-center gap-4 items-center py-4">
-        <Link
-          href={user.userType === "recruiter" ? `/profile/hackathons` : "#"}
+      {/* Logout Button - Top Right */}
+      <div className="flex justify-end pt-4">
+        <Button
+          onClick={handleLogout}
+          variant="outline"
+          className="flex items-center gap-2 text-red-600 border-red-600 hover:bg-red-50"
         >
-          <div
-            className={`w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center 
-      ${
-        user.userType === "recruiter"
-          ? "border-transparent text-white bg-red-600 hover:bg-white hover:text-red-600"
-          : "border-gray-300 text-gray-400 bg-gray-100 cursor-not-allowed"
-      }`}
-          >
-            View Hosted Hackathons
-          </div>
-        </Link>
-        <Link
-          href={user.userType === "recruiter" ? `/profile/internships` : "#"}
-        >
-          <div
-            className={`w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center 
-      ${
-        user.userType === "recruiter"
-          ? "border-transparent text-red-600 bg-white hover:bg-red-600 hover:text-white"
-          : "border-gray-300 text-gray-400 bg-gray-100 cursor-not-allowed"
-      }`}
-          >
-            View Posted Internships
-          </div>
-        </Link>
+          <LogOut className="h-4 w-4" />
+          Logout
+        </Button>
       </div>
+
+      {(currentUser.userType === "recruiter" ||
+        currentUser.userType === "admin") && (
+        <>
+          <h1 className="flex justify-center pt-4 text-2xl">
+            Only For Recruiters
+          </h1>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 items-center py-4">
+            <Link href="/profile/profile-hackathons">
+              <div className="w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center border-transparent text-red-600 bg-white hover:bg-red-600 hover:text-white">
+                View Hosted Hackathons
+              </div>
+            </Link>
+            <Link href="/profile/profile-internships">
+              <div className="w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center border-transparent text-white bg-red-600 hover:bg-white hover:text-red-600">
+                View Posted Internships
+              </div>
+            </Link>
+            <Link href="/profile/profile-mentorships">
+              <div className="w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center border-transparent text-red-600 bg-white hover:bg-red-600 hover:text-white">
+                View Posted Mentorships
+              </div>
+            </Link>
+          </div>
+        </>
+      )}
+      {currentUser.userType === "admin" && (
+        <>
+          <h1 className="flex justify-center pt-4 text-2xl">Only For Admins</h1>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 items-center py-4">
+            <Link href="/admin/admin-courses">
+              <div className="w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center border-transparent text-white bg-red-600 hover:bg-white hover:text-red-600">
+                View Posted Courses
+              </div>
+            </Link>
+            <Link href="/admin/course-upload">
+              <div className="w-full mt-4 py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-center flex items-center justify-center border-transparent text-red-600 bg-white hover:bg-red-600 hover:text-white">
+                Post Courses
+              </div>
+            </Link>
+          </div>
+        </>
+      )}
+
       {/* Hero Section */}
       <div className="flex flex-col lg:flex-row gap-8 mt-8">
         <div className="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
@@ -313,6 +395,26 @@ const Profile = () => {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* User Type (readonly) */}
+              <FormField
+                control={form.control}
+                name="userType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700">
+                      Account Type
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled
+                        className="border-none bg-gray-100"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
               {/* Username */}
               <FormField
                 control={form.control}
@@ -417,67 +519,21 @@ const Profile = () => {
                 )}
               />
 
-              {/* Password */}
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        {...field}
-                        disabled={!isEditing}
-                        className={`bg-gray-50 ${
-                          !isEditing ? "border-none bg-gray-100" : ""
-                        }`}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Confirm Password */}
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">
-                      Confirm Password
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Confirm your password"
-                        {...field}
-                        disabled={!isEditing}
-                        className={`bg-gray-50 ${
-                          !isEditing ? "border-none bg-gray-100" : ""
-                        }`}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               {isEditing && (
                 <div className="flex gap-4 pt-4">
                   <Button
                     type="submit"
                     className="flex-1 bg-green-600 hover:bg-green-700"
+                    disabled={isUpdating}
                   >
-                    Save Changes
+                    {isUpdating ? "Updating..." : "Save Changes"}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     className="flex-1"
-                    onClick={() => setIsEditing(false)}
+                    onClick={handleCancel}
+                    disabled={isUpdating}
                   >
                     Cancel
                   </Button>
@@ -488,7 +544,6 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Rest of your existing code... */}
       {/* Category Navigation */}
       <div className="bg-white py-4 mt-8">
         <div className="flex flex-col sm:flex-row gap-4 items-center overflow-x-auto">
@@ -526,7 +581,9 @@ const Profile = () => {
       <div ref={coursesRef} className="mt-12 pt-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold">Featured Courses</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">
+              Registered Courses
+            </h1>
             <p className="text-slate-400 hover:text-slate-700 transition-all duration-100">
               Learn new skills from top instructors
             </p>
@@ -536,32 +593,34 @@ const Profile = () => {
             className="flex items-center gap-1 text-sm text-amber-600 hover:underline mt-2 sm:mt-0"
           >
             View all
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </div>
-        <CarouselSliderCourse courses={Courses} />
+        {registeredCourses.length === 0 && (
+          <div className="text-center py-8">
+            <p className="text-gray-500">
+              You haven't registered for any courses yet.
+            </p>
+            <Link href="/courses">
+              <Button className="mt-4 bg-green-600 hover:bg-green-700">
+                Browse Courses
+              </Button>
+            </Link>
+          </div>
+        )}
+        {registeredCourses.length > 0 && (
+          <CarouselSliderCourse courses={registeredCourses} />
+        )}
       </div>
 
-      {/* Internships Section */}
       <div ref={internshipsRef} className="mt-16 pt-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">
-              Internship Opportunities
+              Your Registered Internships
             </h1>
             <p className="text-slate-400 hover:text-slate-700 transition-all duration-100">
-              Gain real-world experience
+              Internships you've applied for
             </p>
           </div>
           <Link
@@ -569,63 +628,180 @@ const Profile = () => {
             className="flex items-center gap-1 text-sm text-amber-600 hover:underline mt-2 sm:mt-0"
           >
             View all
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </div>
-        <CarouselSliderIntern internships={Internships} />
+        {registeredInternships.length > 0 ? (
+          <CarouselSliderIntern internships={registeredInternships} />
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-gray-500">
+              You haven't registered for any internships yet.
+            </p>
+            <Link href="/internship">
+              <Button className="mt-4 bg-green-600 hover:bg-green-700">
+                Browse Internships
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Mentors Section */}
-      <div ref={mentorsRef} className="mt-16 pt-4">
+      {/* // And update the posted internships section to be more specific */}
+      <div className="mt-16 pt-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold">Expert Mentors</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">
+              Your Posted Internships
+            </h1>
             <p className="text-slate-400 hover:text-slate-700 transition-all duration-100">
-              Learn from industry professionals
+              Internships you've created
+            </p>
+          </div>
+          <Link
+            href="/profile/profile-internships"
+            className="flex items-center gap-1 text-sm text-amber-600 hover:underline mt-2 sm:mt-0"
+          >
+            View all
+            <ArrowRightIcon className="h-4 w-4" />
+          </Link>
+        </div>
+        {internships.length > 0 ? (
+          <CarouselSliderIntern internships={internships} />
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-gray-500">
+              You haven't posted any internships yet.
+            </p>
+            <Link href="/internship/internship-publishing">
+              <Button className="mt-4 bg-green-600 hover:bg-green-700">
+                Post an Internship
+              </Button>
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Posted Mentorships Section (for mentors) */}
+      {(currentUser.userType === "recruiter" ||
+        currentUser.userType === "admin") && (
+        <div ref={mentorsRef} className="mt-16 pt-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">
+                Your Posted Mentorships
+              </h1>
+              <p className="text-slate-400 hover:text-slate-700 transition-all duration-100">
+                Mentorship programs you've created
+              </p>
+            </div>
+            <Link
+              href="/mentorship/mentor-publishing"
+              className="flex items-center gap-1 text-sm text-amber-600 hover:underline mt-2 sm:mt-0"
+            >
+              Create New
+              <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+          </div>
+          {mentors.length > 0 ? (
+            <CarouselSliderMentor mentors={mentors} />
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500">
+                You haven't posted any mentorships yet.
+              </p>
+              <Link href="/mentorship/mentor-publishing">
+                <Button className="mt-4 bg-green-600 hover:bg-green-700">
+                  Create a Mentorship
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Registered Mentorships Section */}
+      <div className="mt-16 pt-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">
+              Your Registered Mentorships
+            </h1>
+            <p className="text-slate-400 hover:text-slate-700 transition-all duration-100">
+              Mentorship programs you've joined
             </p>
           </div>
           <Link
             href="/mentorship"
             className="flex items-center gap-1 text-sm text-amber-600 hover:underline mt-2 sm:mt-0"
           >
-            View all
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            Browse More
+            <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </div>
-        <CarouselSliderMentor mentors={Mentors} />
+        {registeredMentorships.length > 0 ? (
+          <CarouselSliderMentor mentors={registeredMentorships} />
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-gray-500">
+              You haven't registered for any mentorships yet.
+            </p>
+            <Link href="/mentorship">
+              <Button className="mt-4 bg-green-600 hover:bg-green-700">
+                Browse Mentorships
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Hackathons Section */}
-      <div ref={hackathonsRef} className="mt-16 pt-4">
+      {/* Posted Hackathons Section (for recruiters) */}
+      {(currentUser.userType === "recruiter" ||
+        currentUser.userType === "admin") && (
+        <div ref={hackathonsRef} className="mt-16 pt-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">
+                Your Posted Hackathons
+              </h1>
+              <p className="text-slate-400 hover:text-slate-700 transition-all duration-100">
+                Hackathons you've created
+              </p>
+            </div>
+            <Link
+              href="/hackathon/hackathon-publishing"
+              className="flex items-center gap-1 text-sm text-amber-600 hover:underline mt-2 sm:mt-0"
+            >
+              View all
+              <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+          </div>
+          {postedHackathons.length > 0 ? (
+            <CarouselSliderHackathon hackathons={postedHackathons} />
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-500">
+                You haven't posted any hackathons yet.
+              </p>
+              <Link href="/hackathon/hackathon-publishing">
+                <Button className="mt-4 bg-green-600 hover:bg-green-700">
+                  Create a Hackathon
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Registered Hackathons Section */}
+      <div className="mt-16 pt-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">
-              Upcoming Hackathons
+              Your Registered Hackathons
             </h1>
             <p className="text-slate-400 hover:text-slate-700 transition-all duration-100">
-              Test your skills and compete
+              Hackathons you've registered for
             </p>
           </div>
           <Link
@@ -633,21 +809,23 @@ const Profile = () => {
             className="flex items-center gap-1 text-sm text-amber-600 hover:underline mt-2 sm:mt-0"
           >
             View all
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </div>
-        <CarouselSliderHackathon hackathons={Hackathons} />
+        {registeredHackathons.length > 0 ? (
+          <CarouselSliderHackathon hackathons={registeredHackathons} />
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-gray-500">
+              You haven't registered for any hackathons yet.
+            </p>
+            <Link href="/hackathon">
+              <Button className="mt-4 bg-green-600 hover:bg-green-700">
+                Browse Hackathons
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

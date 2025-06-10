@@ -1,136 +1,54 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import InternshipCard from "@/components/shared/cards/internshipcard";
-
-const internships = [
-  {
-    id: "1",
-    companyName: "Tech Innovators Inc.",
-    title: "Software Development Intern",
-    category: "Software Development",
-    workplaceType: "remote",
-    duration: "3 Months",
-    startDate: "2023-11-15",
-    stipend: {
-      min: 1000,
-      max: 2000,
-    },
-    skills: ["JavaScript", "React", "Node.js"],
-    benefits: {
-      jobOffer: true,
-      certificate: true,
-      lor: false,
-      insurance: false,
-      stipend: true,
-      equipment: false,
-    },
-  },
-  {
-    id: "2",
-    companyName: "Green Earth Initiative",
-    title: "Sustainability Intern",
-    category: "Sustainability",
-    workplaceType: "hybrid",
-    location: "New York, NY",
-    duration: "6 Months",
-    startDate: "2023-12-01",
-    stipend: {
-      min: 1500,
-      max: 2500,
-    },
-    skills: ["Data Analysis", "Research", "Communication"],
-    benefits: {
-      jobOffer: false,
-      certificate: true,
-      lor: true,
-      insurance: true,
-      stipend: true,
-      equipment: true,
-    },
-  },
-  {
-    id: "3",
-    companyName: "Crypto Foundation",
-    title: "Blockchain Developer Intern",
-    category: "Blockchain",
-    workplaceType: "on-site",
-    location: "San Francisco, CA",
-    duration: "2 Months",
-    startDate: "2024-01-10",
-    stipend: {
-      min: 2000,
-      max: 3000,
-    },
-    skills: ["Solidity", "Ethereum", "Smart Contracts"],
-    benefits: {
-      jobOffer: true,
-      certificate: true,
-      lor: true,
-      insurance: false,
-      stipend: true,
-      equipment: false,
-    },
-  },
-  {
-    id: "4",
-    companyName: "MedTech Alliance",
-    title: "Healthcare Data Intern",
-    category: "Healthcare",
-    workplaceType: "remote",
-    duration: "Flexible",
-    startDate: "2023-11-20",
-    stipend: {
-      min: 1200,
-      max: 1800,
-    },
-    skills: ["Python", "Data Science", "Healthcare"],
-    benefits: {
-      jobOffer: false,
-      certificate: true,
-      lor: false,
-      insurance: true,
-      stipend: true,
-      equipment: true,
-    },
-  },
-  {
-    id: "5",
-    companyName: "Digital Marketing Pro",
-    title: "Social Media Intern",
-    category: "Marketing",
-    workplaceType: "remote",
-    duration: "4 Months",
-    startDate: "2023-12-15",
-    stipend: {
-      min: 800,
-      max: 1200,
-    },
-    skills: ["Social Media", "Content Creation", "SEO"],
-    benefits: {
-      jobOffer: false,
-      certificate: true,
-      lor: true,
-      insurance: false,
-      stipend: true,
-      equipment: false,
-    },
-  },
-];
+import axios from "axios";
+import { toast } from "sonner";
 
 const FindInternship = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [internships, setInternships] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch all internships from backend
+  useEffect(() => {
+    const fetchInternships = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:3001/api/v1/internships');
+        setInternships(response.data);
+      } catch (error) {
+        console.error("Error fetching internships:", error);
+        toast.error("Failed to load internships");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInternships();
+  }, []);
+
+  // Filter internships based on search term
   const filteredInternships = internships.filter((internship) => {
     return (
       internship.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       internship.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       internship.workplaceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      internship.location?.toLowerCase().includes(searchTerm.toLowerCase())
+      (internship.workLocation && internship.workLocation.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -153,14 +71,14 @@ const FindInternship = () => {
       {/* Results */}
       <div>
         <h2 className="text-xl font-semibold mb-4">
-          {filteredInternships.length} Internships Found
+          {filteredInternships.length} {filteredInternships.length === 1 ? "Internship" : "Internships"} Found
         </h2>
 
         {filteredInternships.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredInternships.map((internship) => (
               <InternshipCard
-                key={internship.id}
+                key={internship._id} // Using _id from MongoDB
                 internship={internship}
               />
             ))}
@@ -171,18 +89,20 @@ const FindInternship = () => {
               <Search className="h-12 w-12 text-gray-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No internships found
+              {searchTerm ? "No matching internships found" : "No internships available"}
             </h3>
             <p className="text-gray-500">
-              Try adjusting your search criteria
+              {searchTerm ? "Try adjusting your search criteria" : "Check back later for new opportunities"}
             </p>
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => setSearchTerm("")}
-            >
-              Clear search
-            </Button>
+            {searchTerm && (
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={() => setSearchTerm("")}
+              >
+                Clear search
+              </Button>
+            )}
           </div>
         )}
       </div>

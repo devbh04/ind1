@@ -1,9 +1,11 @@
-// app/internship/page.tsx
 "use client";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import InternCategoryCard from "@/components/shared/cards/interncategorycard";
 import { CarouselSliderIntern } from "@/components/shared/cards/sliders/carouselslider-intern";
 import Link from "next/link";
+import axios from "axios";
+import { toast } from "sonner";
+import { useUserStore } from "@/store/signUpStore";
 
 const Internship = () => {
   const hrRef = useRef<HTMLDivElement>(null);
@@ -12,163 +14,53 @@ const Internship = () => {
   const financeRef = useRef<HTMLDivElement>(null);
   const opsRef = useRef<HTMLDivElement>(null);
 
-  // Sample internship data by category
-  const hrInternships = [
-    {
-      id: "6",
-      companyName: "Talent Solutions Ltd.",
-      title: "HR Recruitment Intern",
-      category: "Human Resources",
-      workplaceType: "hybrid",
-      location: "Chicago, IL",
-      duration: "3 Months",
-      startDate: "2023-12-01",
-      stipend: {
-        min: 1200,
-        max: 1800
-      },
-      skills: ["Recruitment", "Screening", "Interviewing"],
-      benefits: {
-        jobOffer: true,
-        certificate: true,
-        lor: true,
-        insurance: false,
-        stipend: true,
-        equipment: false
-      }
-    }
-  ];
+  const {currentUser} = useUserStore();
 
-  const devInternships = [
-    {
-      id: "1",
-      companyName: "Tech Innovators Inc.",
-      title: "Software Development Intern",
-      category: "Software Development",
-      workplaceType: "remote",
-      duration: "3 Months",
-      startDate: "2023-11-15",
-      stipend: {
-        min: 1000,
-        max: 2000
-      },
-      skills: ["JavaScript", "React", "Node.js"],
-      benefits: {
-        jobOffer: true,
-        certificate: true,
-        lor: false,
-        insurance: false,
-        stipend: true,
-        equipment: false
-      }
-    },
-    {
-      id: "3",
-      companyName: "Crypto Foundation",
-      title: "Blockchain Developer Intern",
-      category: "Blockchain",
-      workplaceType: "on-site",
-      location: "San Francisco, CA",
-      duration: "2 Months",
-      startDate: "2024-01-10",
-      stipend: {
-        min: 2000,
-        max: 3000
-      },
-      skills: ["Solidity", "Ethereum", "Smart Contracts"],
-      benefits: {
-        jobOffer: true,
-        certificate: true,
-        lor: true,
-        insurance: false,
-        stipend: true,
-        equipment: false
-      }
-    }
-  ];
+  const [internships, setInternships] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const marketingInternships = [
-    {
-      id: "7",
-      companyName: "Digital Marketing Pro",
-      title: "Social Media Intern",
-      category: "Marketing",
-      workplaceType: "remote",
-      duration: "4 Months",
-      startDate: "2024-01-05",
-      stipend: {
-        min: 800,
-        max: 1500
-      },
-      skills: ["Social Media", "Content Creation", "Analytics"],
-      benefits: {
-        jobOffer: false,
-        certificate: true,
-        lor: true,
-        insurance: false,
-        stipend: true,
-        equipment: true
+  // Fetch all internships
+  useEffect(() => {
+    const fetchInternships = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          "http://localhost:3001/api/v1/internships"
+        );
+        setInternships(response.data);
+      } catch (error) {
+        console.error("Error fetching internships:", error);
+        toast.error("Failed to load internships");
+      } finally {
+        setLoading(false);
       }
-    }
-  ];
+    };
 
-  const financeInternships = [
-    {
-      id: "8",
-      companyName: "Global Finance Corp",
-      title: "Financial Analyst Intern",
-      category: "Finance",
-      workplaceType: "on-site",
-      location: "New York, NY",
-      duration: "6 Months",
-      startDate: "2023-12-15",
-      stipend: {
-        min: 2500,
-        max: 3500
-      },
-      skills: ["Financial Modeling", "Excel", "Data Analysis"],
-      benefits: {
-        jobOffer: true,
-        certificate: true,
-        lor: true,
-        insurance: true,
-        stipend: true,
-        equipment: true
-      }
-    }
-  ];
-
-  const opsInternships = [
-    {
-      id: "9",
-      companyName: "Logistics Solutions",
-      title: "Operations Intern",
-      category: "Operations",
-      workplaceType: "hybrid",
-      location: "Dallas, TX",
-      duration: "3 Months",
-      startDate: "2024-02-01",
-      stipend: {
-        min: 1500,
-        max: 2000
-      },
-      skills: ["Process Improvement", "Supply Chain", "Coordination"],
-      benefits: {
-        jobOffer: false,
-        certificate: true,
-        lor: true,
-        insurance: true,
-        stipend: true,
-        equipment: false
-      }
-    }
-  ];
+    fetchInternships();
+  }, []);
+  // Filter internships by category
+  const hrInternships = internships.filter(
+    (internship) => internship.category === "Human Resources"
+  );
+  const devInternships = internships.filter((internship) =>
+    ["Software Development", "Blockchain"].includes(internship.category)
+  );
+  const marketingInternships = internships.filter(
+    (internship) => internship.category === "Marketing"
+  );
+  const financeInternships = internships.filter(
+    (internship) => internship.category === "Finance"
+  );
+  const opsInternships = internships.filter(
+    (internship) => internship.category === "Operations"
+  );
 
   const scrollToCategory = (ref) => {
     if (ref.current) {
       const appBarHeight = 96;
       const elementPosition = ref.current.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - appBarHeight;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - appBarHeight;
 
       window.scrollTo({
         top: offsetPosition,
@@ -176,6 +68,14 @@ const Internship = () => {
       });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-4 sm:mx-8 md:mx-16 lg:mx-20">
@@ -195,12 +95,20 @@ const Internship = () => {
             skills, gain CV points & get hired by your dream company.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/internship/find-internship" className="bg-green-950 h-10 flex items-center sm:text-xl border border-white text-white hover:bg-white hover:border hover:border-green-950 hover:text-black rounded-full p-4 sm:p-6 transition-all duration-100">
+            <Link
+              href="/internship/find-internship"
+              className="bg-green-950 h-10 flex items-center sm:text-xl border border-white text-white hover:bg-white hover:border hover:border-green-950 hover:text-black rounded-full p-4 sm:p-6 transition-all duration-100"
+            >
               Find Internships
             </Link>
-            <Link href={"/internship/internship-publishing"} className="bg-white flex items-center h-10 sm:text-xl text-black border border-green-950 hover:bg-green-950 hover:border hover:border-white hover:text-white rounded-full p-4 sm:p-6 transition-all duration-100">
+            {(currentUser.userType === "recruiter" || currentUser.userType === "admin") &&
+              <Link
+              href={"/internship/internship-publishing"}
+              className="bg-white flex items-center h-10 sm:text-xl text-black border border-green-950 hover:bg-green-950 hover:border hover:border-white hover:text-white rounded-full p-4 sm:p-6 transition-all duration-100"
+              >
               + Post Internships
             </Link>
+            }
           </div>
         </div>
         <img
@@ -217,19 +125,34 @@ const Internship = () => {
             Internship Category:
           </h1>
           <div className="flex gap-2 sm:gap-4 pb-2 overflow-x-auto w-full sm:w-auto">
-            <button onClick={() => scrollToCategory(hrRef)} className="flex-shrink-0">
+            <button
+              onClick={() => scrollToCategory(hrRef)}
+              className="flex-shrink-0"
+            >
               <InternCategoryCard category="Human Resources" />
             </button>
-            <button onClick={() => scrollToCategory(devRef)} className="flex-shrink-0">
+            <button
+              onClick={() => scrollToCategory(devRef)}
+              className="flex-shrink-0"
+            >
               <InternCategoryCard category="Software Development" />
             </button>
-            <button onClick={() => scrollToCategory(marketingRef)} className="flex-shrink-0">
+            <button
+              onClick={() => scrollToCategory(marketingRef)}
+              className="flex-shrink-0"
+            >
               <InternCategoryCard category="Marketing" />
             </button>
-            <button onClick={() => scrollToCategory(financeRef)} className="flex-shrink-0">
+            <button
+              onClick={() => scrollToCategory(financeRef)}
+              className="flex-shrink-0"
+            >
               <InternCategoryCard category="Finance" />
             </button>
-            <button onClick={() => scrollToCategory(opsRef)} className="flex-shrink-0">
+            <button
+              onClick={() => scrollToCategory(opsRef)}
+              className="flex-shrink-0"
+            >
               <InternCategoryCard category="Operations" />
             </button>
           </div>
@@ -237,40 +160,50 @@ const Internship = () => {
       </div>
 
       {/* Category Sections */}
-      <div ref={hrRef} className="mt-12 py-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-          Human Resources Internships
-        </h2>
-        <CarouselSliderIntern internships={hrInternships} />
-      </div>
+      {hrInternships.length > 0 && (
+        <div ref={hrRef} className="mt-12 py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Human Resources Internships
+          </h2>
+          <CarouselSliderIntern internships={hrInternships} />
+        </div>
+      )}
 
-      <div ref={devRef} className="mt-16 py-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-          Software Development Internships
-        </h2>
-        <CarouselSliderIntern internships={devInternships} />
-      </div>
+      {devInternships.length > 0 && (
+        <div ref={devRef} className="mt-16 py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Development Internships
+          </h2>
+          <CarouselSliderIntern internships={devInternships} />
+        </div>
+      )}
 
-      <div ref={marketingRef} className="mt-16 py-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-          Marketing Internships
-        </h2>
-        <CarouselSliderIntern internships={marketingInternships} />
-      </div>
+      {marketingInternships.length > 0 && (
+        <div ref={marketingRef} className="mt-16 py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Marketing Internships
+          </h2>
+          <CarouselSliderIntern internships={marketingInternships} />
+        </div>
+      )}
 
-      <div ref={financeRef} className="mt-16 py-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-          Finance Internships
-        </h2>
-        <CarouselSliderIntern internships={financeInternships} />
-      </div>
+      {financeInternships.length > 0 && (
+        <div ref={financeRef} className="mt-16 py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Finance Internships
+          </h2>
+          <CarouselSliderIntern internships={financeInternships} />
+        </div>
+      )}
 
-      <div ref={opsRef} className="mt-16 py-8 mb-16">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">
-          Operations Internships
-        </h2>
-        <CarouselSliderIntern internships={opsInternships} />
-      </div>
+      {opsInternships.length > 0 && (
+        <div ref={opsRef} className="mt-16 py-8 mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Operations Internships
+          </h2>
+          <CarouselSliderIntern internships={opsInternships} />
+        </div>
+      )}
     </div>
   );
 };

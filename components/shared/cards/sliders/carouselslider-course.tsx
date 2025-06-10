@@ -19,7 +19,7 @@ export function CarouselSliderCourse({ courses }) {
     >
       <CarouselContent>
         {courses.map((course) => (
-          <CarouselItem key={course.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+          <CarouselItem key={course._id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
             <div className="p-1 h-full">
               <CourseCard course={course} />
             </div>

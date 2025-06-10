@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -14,18 +15,98 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft } from "lucide-react";
+import { toast } from "sonner";
+import axios from "axios";
+import { useUserStore } from "@/store/signUpStore";
 
 export default function ApplyPage() {
-  const [gender, setGender] = useState("male");
-  const [type, setType] = useState("college students");
-  const [diffAbled, setDiffAbled] = useState(false);
-  const [graduationYear, setGraduationYear] = useState("");
+  const { id } = useParams();
+  console.log("Internship ID:", id);
+  const router = useRouter();
+  const { currentUser } = useUserStore();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    mobile: "",
+    firstName: "",
+    lastName: "",
+    gender: "male",
+    institute: "",
+    type: "college students",
+    course: "",
+    specialization: "",
+    graduationYear: "",
+    courseDuration: "",
+    diffAbled: false,
+    country: "",
+    resumeLink: "",
+    termsAgreed: false,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSelectChange = (name, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.termsAgreed) {
+      toast.error("You must agree to the terms to apply");
+      return;
+    }
+
+    try {
+      const payload = {
+        ...formData,
+        applicant: currentUser?._id, // ✅ Add this
+      };
+
+      const { data } = await axios.post(
+        `http://localhost:3001/api/v1/applications/${id}/apply`,
+        payload,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success("Application submitted successfully!");
+      router.push(`/internship/${id}`);
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to submit application";
+      toast.error(errorMsg);
+    }
+  };
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.back()}
+            className="rounded-full"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
           <div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
               Candidate Details
@@ -33,16 +114,20 @@ export default function ApplyPage() {
           </div>
         </div>
 
-        <form className="space-y-4 sm:space-y-6">
+        <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
           <div className="grid gap-4 sm:gap-6">
             {/* Email and Mobile */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label className="text-sm font-medium mb-2 block">Email*</Label>
                 <Input
+                  name="email"
                   type="email"
                   placeholder="Enter your email"
                   className="h-10 sm:h-11"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                 />
               </div>
               <div>
@@ -50,9 +135,13 @@ export default function ApplyPage() {
                   Mobile*
                 </Label>
                 <Input
+                  name="mobile"
                   type="tel"
                   placeholder="Enter your mobile number"
                   className="h-10 sm:h-11"
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  required
                 />
               </div>
             </div>
@@ -64,15 +153,26 @@ export default function ApplyPage() {
                   First Name*
                 </Label>
                 <Input
+                  name="firstName"
                   placeholder="Enter first name"
                   className="h-10 sm:h-11"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
                 />
               </div>
               <div>
                 <Label className="text-sm font-medium mb-2 block">
                   Last Name*
                 </Label>
-                <Input placeholder="Enter last name" className="h-10 sm:h-11" />
+                <Input
+                  name="lastName"
+                  placeholder="Enter last name"
+                  className="h-10 sm:h-11"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 
@@ -90,16 +190,19 @@ export default function ApplyPage() {
                   <Button
                     key={g}
                     type="button"
-                    variant={gender === g.toLowerCase() ? "default" : "outline"}
+                    variant={
+                      formData.gender === g.toLowerCase()
+                        ? "default"
+                        : "outline"
+                    }
                     className={`rounded-full px-3 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm ${
-                      gender === g.toLowerCase()
+                      formData.gender === g.toLowerCase()
                         ? "bg-green-600 hover:bg-green-700"
                         : "bg-white hover:bg-gray-50"
                     }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setGender(g.toLowerCase());
-                    }}
+                    onClick={() =>
+                      handleSelectChange("gender", g.toLowerCase())
+                    }
                   >
                     {g}
                   </Button>
@@ -113,8 +216,12 @@ export default function ApplyPage() {
                 Institute Name*
               </Label>
               <Input
+                name="institute"
                 placeholder="Enter your institute name"
                 className="h-10 sm:h-11"
+                value={formData.institute}
+                onChange={handleChange}
+                required
               />
             </div>
 
@@ -131,16 +238,15 @@ export default function ApplyPage() {
                   <Button
                     key={t}
                     type="button"
-                    variant={type === t.toLowerCase() ? "default" : "outline"}
+                    variant={
+                      formData.type === t.toLowerCase() ? "default" : "outline"
+                    }
                     className={`rounded-full px-3 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm ${
-                      type === t.toLowerCase()
+                      formData.type === t.toLowerCase()
                         ? "bg-green-600 hover:bg-green-700"
                         : "bg-white hover:bg-gray-50"
                     }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setType(t.toLowerCase());
-                    }}
+                    onClick={() => handleSelectChange("type", t.toLowerCase())}
                   >
                     {t}
                   </Button>
@@ -154,7 +260,10 @@ export default function ApplyPage() {
                 <Label className="text-sm font-medium mb-2 block">
                   Course*
                 </Label>
-                <Select>
+                <Select
+                  value={formData.course}
+                  onValueChange={(value) => handleSelectChange("course", value)}
+                >
                   <SelectTrigger className="h-10 sm:h-11">
                     <SelectValue placeholder="Select your course" />
                   </SelectTrigger>
@@ -170,7 +279,12 @@ export default function ApplyPage() {
                 <Label className="text-sm font-medium mb-2 block">
                   Specialization*
                 </Label>
-                <Select>
+                <Select
+                  value={formData.specialization}
+                  onValueChange={(value) =>
+                    handleSelectChange("specialization", value)
+                  }
+                >
                   <SelectTrigger className="h-10 sm:h-11">
                     <SelectValue placeholder="Select specialization" />
                   </SelectTrigger>
@@ -194,16 +308,15 @@ export default function ApplyPage() {
                   <Button
                     key={year}
                     type="button"
-                    variant={graduationYear === year ? "default" : "outline"}
+                    variant={
+                      formData.graduationYear === year ? "default" : "outline"
+                    }
                     className={`rounded-full px-3 sm:px-4 h-8 sm:h-9 text-xs sm:text-sm ${
-                      graduationYear === year
+                      formData.graduationYear === year
                         ? "bg-green-600 hover:bg-green-700"
                         : "bg-white hover:bg-gray-50"
                     }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setGraduationYear(year);
-                    }}
+                    onClick={() => handleSelectChange("graduationYear", year)}
                   >
                     {year}
                   </Button>
@@ -216,7 +329,12 @@ export default function ApplyPage() {
               <Label className="text-sm font-medium mb-2 block">
                 Course Duration*
               </Label>
-              <Select>
+              <Select
+                value={formData.courseDuration}
+                onValueChange={(value) =>
+                  handleSelectChange("courseDuration", value)
+                }
+              >
                 <SelectTrigger className="h-10 sm:h-11">
                   <SelectValue placeholder="Select duration" />
                 </SelectTrigger>
@@ -236,31 +354,25 @@ export default function ApplyPage() {
               <div className="flex gap-2 sm:gap-4">
                 <Button
                   type="button"
-                  variant={!diffAbled ? "default" : "outline"}
+                  variant={!formData.diffAbled ? "default" : "outline"}
                   className={`rounded-full px-4 sm:px-6 h-8 sm:h-9 text-xs sm:text-sm ${
-                    !diffAbled
+                    !formData.diffAbled
                       ? "bg-green-600 hover:bg-green-700"
                       : "bg-white hover:bg-gray-50"
                   }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setDiffAbled(false);
-                  }}
+                  onClick={() => handleSelectChange("diffAbled", false)}
                 >
                   No
                 </Button>
                 <Button
                   type="button"
-                  variant={diffAbled ? "default" : "outline"}
+                  variant={formData.diffAbled ? "default" : "outline"}
                   className={`rounded-full px-4 sm:px-6 h-8 sm:h-9 text-xs sm:text-sm ${
-                    diffAbled
+                    formData.diffAbled
                       ? "bg-green-600 hover:bg-green-700"
                       : "bg-white hover:bg-gray-50"
                   }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setDiffAbled(true);
-                  }}
+                  onClick={() => handleSelectChange("diffAbled", true)}
                 >
                   Yes
                 </Button>
@@ -272,7 +384,10 @@ export default function ApplyPage() {
               <Label className="text-sm font-medium mb-2 block">
                 Country of Residence*
               </Label>
-              <Select>
+              <Select
+                value={formData.country}
+                onValueChange={(value) => handleSelectChange("country", value)}
+              >
                 <SelectTrigger className="h-10 sm:h-11">
                   <SelectValue placeholder="Select your country" />
                 </SelectTrigger>
@@ -290,15 +405,26 @@ export default function ApplyPage() {
                 Resume Link*
               </Label>
               <Input
+                name="resumeLink"
                 type="text"
                 placeholder="Provide your Resume Link"
                 className="h-10 sm:h-11"
+                value={formData.resumeLink}
+                onChange={handleChange}
+                required
               />
             </div>
 
             {/* Terms Checkbox */}
             <div className="flex items-start gap-3 pt-2 sm:pt-4">
-              <Checkbox id="terms" className="mt-1" />
+              <Checkbox
+                id="terms"
+                className="mt-1"
+                checked={formData.termsAgreed}
+                onCheckedChange={(checked) =>
+                  handleSelectChange("termsAgreed", checked)
+                }
+              />
               <Label
                 htmlFor="terms"
                 className="text-xs sm:text-sm leading-snug text-gray-600"

@@ -8,11 +8,15 @@ const InternshipCard = ({ internship }) => {
   const router = useRouter();
   
   const handleClick = () => {
-    router.push('/internship/internship-id');
+    router.push(`/internship/${internship._id}`);
   };
 
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
@@ -50,7 +54,7 @@ const InternshipCard = ({ internship }) => {
         <div className="flex items-center gap-2 text-sm">
           <MapPin className="h-4 w-4 text-gray-500" />
           <span className="text-gray-700">
-            {internship.workplaceType === 'remote' ? 'Remote' : internship.location}
+            {internship.workplaceType === 'remote' ? 'Remote' : internship.workLocation || 'Not specified'}
           </span>
         </div>
         
@@ -67,7 +71,7 @@ const InternshipCard = ({ internship }) => {
           <div className="flex items-center gap-2 text-sm">
             <BadgeDollarSign className="h-4 w-4 text-gray-500" />
             <span className="text-gray-700">
-              ${internship.stipend.min.toLocaleString()} - ${internship.stipend.max.toLocaleString()}
+              ${internship.minStipend?.toLocaleString() || '0'} - ${internship.maxStipend?.toLocaleString() || '0'}
             </span>
           </div>
         )}
@@ -76,7 +80,7 @@ const InternshipCard = ({ internship }) => {
         <div className="pt-2">
           <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Skills</h4>
           <div className="flex flex-wrap gap-1">
-            {internship.skills.slice(0, 4).map((skill, index) => (
+            {internship.skillsRequired?.slice(0, 4).map((skill, index) => (
               <span 
                 key={index} 
                 className="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded-full"
@@ -84,9 +88,9 @@ const InternshipCard = ({ internship }) => {
                 {skill}
               </span>
             ))}
-            {internship.skills.length > 4 && (
+            {internship.skillsRequired?.length > 4 && (
               <span className="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded-full">
-                +{internship.skills.length - 4}
+                +{internship.skillsRequired.length - 4}
               </span>
             )}
           </div>

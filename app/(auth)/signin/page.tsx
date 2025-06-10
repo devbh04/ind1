@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -16,8 +17,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/signUpStore";
 
-// Simplified form validation schema for login
 const formSchema = z.object({
   usernameOrEmail: z.string().min(1, {
     message: "Username or email is required",
@@ -29,6 +30,9 @@ const formSchema = z.object({
 
 const SignIn = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { setCurrentUser } = useUserStore();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,14 +41,52 @@ const SignIn = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    toast.success("Redirecting please wait. Logged in successfully!", {
-      description: `Welcome back!`,
-    },);
-    setTimeout(() => {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("Form submitted with values:", values);
+    setIsLoading(true);
+    try {
+      const response = await fetch('http://localhost:3001/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Create user object with consistent _id naming
+      const userData = {
+        _id: data.user.id, // MongoDB _id
+        userType: data.user.userType,
+        username: data.user.username,
+        email: data.user.email,
+        mobile: data.user.mobile,
+        gender: data.user.gender,
+        token: data.token,
+      };
+
+      // Update store and localStorage
+      setCurrentUser(userData);
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('userId', data.user.id); // Store ID separately for quick access
+
+      toast.success("Logged in successfully!", {
+        description: `Welcome back, ${data.user.username}!`,
+      });
+
       router.push("/");
-    }, 3000);
-    console.log(values);
+    } catch (error: any) {
+      toast.error("Login failed", {
+        description: error.message || "Invalid credentials",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -71,8 +113,6 @@ const SignIn = () => {
           {/* Right div - takes full width on smaller screens, 2/3 on larger */}
           <div className="w-full lg:w-2/3 lg:p-8 p-4 overflow-y-auto">
             <div className="max-w-md mx-auto h-full flex flex-col justify-center">
-              {" "}
-              {/* Added flex properties here */}
               <div className="">
                 <h1 className="text-2xl font-bold text-gray-900">Sign In</h1>
                 <p className="text-sm text-gray-500 mt-2">
@@ -101,6 +141,7 @@ const SignIn = () => {
                           <Input
                             placeholder="Enter your username or email"
                             {...field}
+                            disabled={isLoading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -120,6 +161,7 @@ const SignIn = () => {
                             type="password"
                             placeholder="Enter your password"
                             {...field}
+                            disabled={isLoading}
                           />
                         </FormControl>
                         <div className="flex justify-end">
@@ -135,12 +177,13 @@ const SignIn = () => {
                     )}
                   />
 
-                    <Button
-                      type="submit"
-                      className="w-full bg-amber-600 hover:bg-amber-700"
-                    >
-                      Sign In
-                    </Button>
+                  <Button
+                    type="submit"
+                    className="w-full bg-amber-600 hover:bg-amber-700"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Signing in..." : "Sign In"}
+                  </Button>
                 </form>
               </Form>
             </div>
