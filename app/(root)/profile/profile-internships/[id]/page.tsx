@@ -1,7 +1,7 @@
 "use client";
-import { useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
+import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,11 +15,11 @@ import {
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { BASE_URL } from '@/utils/constants';
+import { BASE_URL } from "@/utils/constants";
 
 export default function InternshipCandidatesPage() {
   const { id } = useParams(); // Get internship ID from URL
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,10 +31,10 @@ export default function InternshipCandidatesPage() {
           `${BASE_URL}/api/v1/applications/internship/${id}/applications`
         );
         setCandidates(response.data.data);
-        console.log('Fetched applications:', response.data.data);
-        console.log('Fetched candidates:', candidates);
+        console.log("Fetched applications:", response.data.data);
+        console.log("Fetched candidates:", candidates);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch applications');
+        setError(err.response?.data?.error || "Failed to fetch applications");
       } finally {
         setLoading(false);
       }
@@ -42,24 +42,22 @@ export default function InternshipCandidatesPage() {
 
     fetchApplications();
   }, [id]);
-  
 
   const filteredCandidates = candidates.filter((candidate) => {
-  const firstName = candidate.firstName;
-  const lastName = candidate.lastName;
-  const email = candidate.email;
-  const institute = candidate.institute;
-  const course = candidate.course;
+    const firstName = candidate.firstName;
+    const lastName = candidate.lastName;
+    const email = candidate.email;
+    const institute = candidate.institute;
+    const course = candidate.course;
 
-  return (
-    firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    institute.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-});
-
+    return (
+      firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      institute.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   if (loading) return <div>Loading applications...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -77,7 +75,7 @@ export default function InternshipCandidatesPage() {
               {filteredCandidates.length} candidates found
             </p>
           </div>
-          
+
           {/* Search Bar */}
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -136,7 +134,8 @@ export default function InternshipCandidatesPage() {
                           {candidate.courseDuration} • {candidate.country}
                         </span>
                         <span className="text-sm">
-                          Differently Abled: {candidate.diffAbled ? "Yes" : "No"}
+                          Differently Abled:{" "}
+                          {candidate.diffAbled ? "Yes" : "No"}
                         </span>
                       </div>
                     </TableCell>
@@ -151,7 +150,11 @@ export default function InternshipCandidatesPage() {
                           </Button>
                         </a>
                         <a
-                          href={candidate.resumeLink}
+                          href={
+                            candidate.resumeLink.startsWith("http")
+                              ? candidate.resumeLink
+                              : `https://${candidate.resumeLink}`
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-blue-600 hover:underline"
