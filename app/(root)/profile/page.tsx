@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { BASE_URL } from "@/utils/constants";
+import { ChangePasswordDialog } from "@/components/shared/resetPassword";
 
 // Updated form schema without password fields
 const formSchema = z.object({
@@ -251,9 +252,7 @@ const Profile = () => {
     if (!currentUser?._id) return;
 
     axios
-      .get(
-        `${BASE_URL}/api/v1/users/${currentUser._id}/registered-courses`
-      )
+      .get(`${BASE_URL}/api/v1/users/${currentUser._id}/registered-courses`)
       .then((res) => {
         setRegisteredCourses(res.data); // Already populated
       })
@@ -542,6 +541,7 @@ const Profile = () => {
               )}
             </form>
           </Form>
+          <ChangePasswordDialog />
         </div>
       </div>
 

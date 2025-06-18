@@ -152,8 +152,8 @@ const HostHackathon = () => {
   return (
     <div className="min-h-screen">
       <Head>
-        <title>Host a Hackathon | Unstop</title>
-        <meta name="description" content="Create a new hackathon on Unstop" />
+        <title>Host a Hackathon</title>
+        <meta name="description" content="Create a new hackathon" />
       </Head>
 
       <div className="max-w-4xl mx-auto px-4 py-6">

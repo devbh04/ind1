@@ -107,7 +107,7 @@ const MentorRegistrationForm = () => {
       <div className="rounded-lg shadow-sm p-4 md:p-6 mb-6 border border-yellow-100">
         <div className="bg-amber-100 p-4 md:p-7 pb-1 mb-4 md:mb-7 border border-amber-500 rounded-xl w-full">
           <h1 className="text-xl md:text-2xl font-semibold text-green-900 mb-4 md:mb-6">
-            Become an Unstoppable Mentor!
+            Become a Mentor!
           </h1>
           <h2 className="text-base md:text-lg font-medium text-green-900 mb-2 md:mb-4">
             Enter your details
