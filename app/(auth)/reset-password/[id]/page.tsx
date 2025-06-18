@@ -81,14 +81,14 @@ export default function ResetPassword() {
       <div className="h-screen p-4 lg:flex-row flex flex-col items-center justify-center">
         {/* Mobile LOGO */}
         <div className="lg:hidden flex p-6">
-          <img src="/unstop-logo.svg" alt="Logo" className="w-32" />
+          <img src="/hacklogo.png" alt="Logo" className="w-32" />
         </div>
 
         <div className="flex h-3/4 lg:w-2/3 w-full bg-white border rounded-lg overflow-hidden">
           {/* Left div - visible only on lg screens and up (1024px+) */}
           <div className="hidden text-center lg:block w-1/3 bg-gradient-to-r from-amber-600 to-amber-800 text-white py-16 px-4 sm:px-6 lg:px-8 flex-col justify-center">
             <div className="flex justify-center p-2 rounded-xl drop-shadow-2xl ring-2 ring-amber-700 bg-gradient-to-r from-amber-50 to-amber-200">
-              <img src="/unstop-logo.svg" alt="Logo" className="w-32" />
+              <img src="/hacklogo.png" alt="Logo" className="w-32" />
             </div>
             <img src="/learn.webp" alt="Logo" className="p-4" />
             <h2 className="text-2xl font-bold mb-4">Reset Your Password</h2>

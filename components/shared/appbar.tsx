@@ -427,8 +427,7 @@ const AppBar = () => {
 
           {/* Logo */}
           <Link href="/" className="flex items-center flex-shrink-0">
-            <p className="text-xl text-green-900">N</p>
-            <img src="/unstop-logo.png" alt="Logo" className="w-16" />
+            <img src="/hacklogo.png" alt="Logo" className="w-32" />
           </Link>
 
           {/* Search bar (visible only on lg+) */}
@@ -529,8 +528,8 @@ const AppBar = () => {
               className="flex items-center"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <p className="text-xl text-green-900">N</p>
-              <img src="/unstop-logo.svg" alt="Logo" className="w-16" />
+
+              <img src="/hacklogo.png" alt="Logo" className="w-24" />
             </Link>
             <button
               onClick={() => setMobileMenuOpen(false)}

@@ -13,7 +13,7 @@ const HackathonOpp = () => {
           <div className='flex flex-col sm:flex-row gap-4'>
             <div className='flex-shrink-0'>
               <img 
-                src="/unstop-logo.png" 
+                src="/hacklogo.png" 
                 alt="Hackathon Logo" 
                 className='p-2 h-20 w-20 sm:h-24 sm:w-24 border-4 border-green-500 rounded-lg object-contain'
               />

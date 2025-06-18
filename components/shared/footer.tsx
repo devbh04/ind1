@@ -7,10 +7,9 @@ const Footer: React.FC = () => {
         
         <div className="flex flex-col items-center lg:pl-36 w-full lg:w-auto">
           <div className='flex items-center'>
-            <p className='text-4xl text-green-900'>N</p>
-            <img src="/unstop-logo.png" alt="" className='h-14'/>
+            <img src="/hacklogo.png" alt="" className='h-14'/>
           </div>
-          <p className="mt-4 text-lg text-gray-400 text-center">&copy; 2025 DunStop. All rights reserved.</p>
+          <p className="mt-4 text-lg text-gray-400 text-center">&copy; 2025 Hackify. All rights reserved.</p>
         </div>
 
         <div className="flex flex-wrap justify-center lg:justify-start space-x-0 lg:space-x-12 mt-8 lg:mt-0 w-full lg:w-auto lg:pr-52">
