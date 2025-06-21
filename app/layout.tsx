@@ -20,6 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="5179aa5d-92b8-452a-82ef-291c9c806a27"></script>
+      </head>
       <body
         className={`${geistSans.className} h-screen text-black bg-slate-100`}
       >
