@@ -6,7 +6,6 @@ import CourseCategoryCard from "@/components/shared/cards/coursecategorycard";
 import Link from "next/link";
 import { BASE_URL } from "@/utils/constants";
 
-
 const Courses = () => {
   const techRef = useRef<HTMLDivElement>(null);
   const businessRef = useRef<HTMLDivElement>(null);
@@ -37,7 +36,8 @@ const Courses = () => {
     if (ref.current) {
       const appBarHeight = 96;
       const elementPosition = ref.current.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - appBarHeight;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - appBarHeight;
 
       window.scrollTo({
         top: offsetPosition,
@@ -63,7 +63,8 @@ const Courses = () => {
     (course) => course.specialization === "Health"
   );
 
-  if (loading) return <div className="text-center py-12">Loading courses...</div>;
+  if (loading)
+    return <div className="text-center py-12">Loading courses...</div>;
 
   return (
     <div className="mx-4 sm:mx-8 md:mx-16 lg:mx-20">
@@ -80,7 +81,8 @@ const Courses = () => {
           </div>
           <p className="p-2 text-slate-400 w-full lg:w-3/4 hover:text-slate-700 transition-all duration-100">
             Discover courses from top institutions and industry experts to gain
-            new skills, advance your career, and achieve your professional goals.
+            new skills, advance your career, and achieve your professional
+            goals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
@@ -105,7 +107,10 @@ const Courses = () => {
             Course Categories:
           </h1>
           <div className="flex gap-2 sm:gap-4 pb-2 overflow-x-auto w-full sm:w-auto">
-            <button onClick={() => scrollToCategory(techRef)} className="flex-shrink-0">
+            <button
+              onClick={() => scrollToCategory(techRef)}
+              className="flex-shrink-0"
+            >
               <CourseCategoryCard category="Technology" />
             </button>
             <button
@@ -114,7 +119,10 @@ const Courses = () => {
             >
               <CourseCategoryCard category="Business" />
             </button>
-            <button onClick={() => scrollToCategory(artsRef)} className="flex-shrink-0">
+            <button
+              onClick={() => scrollToCategory(artsRef)}
+              className="flex-shrink-0"
+            >
               <CourseCategoryCard category="Arts & Design" />
             </button>
             <button
@@ -123,7 +131,10 @@ const Courses = () => {
             >
               <CourseCategoryCard category="Science" />
             </button>
-            <button onClick={() => scrollToCategory(healthRef)} className="flex-shrink-0">
+            <button
+              onClick={() => scrollToCategory(healthRef)}
+              className="flex-shrink-0"
+            >
               <CourseCategoryCard category="Health" />
             </button>
           </div>
@@ -131,30 +142,50 @@ const Courses = () => {
       </div>
 
       {/* Category Sections */}
-      <div ref={techRef} className="mt-12 py-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">Technology Courses</h2>
-        <CarouselSliderCourse courses={techCourses} />
-      </div>
+      {techCourses.length >0 && (
+        <div ref={techRef} className="mt-12 py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Technology Courses
+          </h2>
+          <CarouselSliderCourse courses={techCourses} />
+        </div>
+      )}
 
-      <div ref={businessRef} className="mt-16 py-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">Business Courses</h2>
-        <CarouselSliderCourse courses={businessCourses} />
-      </div>
+      {businessCourses.length >0 && (
+        <div ref={businessRef} className="mt-16 py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Business Courses
+          </h2>
+          <CarouselSliderCourse courses={businessCourses} />
+        </div>
+      )}
 
-      <div ref={artsRef} className="mt-16 py-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">Arts & Design Courses</h2>
-        <CarouselSliderCourse courses={artsCourses} />
-      </div>
+      {artsCourses.length >0 && (
+        <div ref={artsRef} className="mt-16 py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Arts & Design Courses
+          </h2>
+          <CarouselSliderCourse courses={artsCourses} />
+        </div>
+      )}
 
-      <div ref={scienceRef} className="mt-16 py-8">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">Science Courses</h2>
-        <CarouselSliderCourse courses={scienceCourses} />
-      </div>
+      {scienceCourses.length >0 && (
+        <div ref={scienceRef} className="mt-16 py-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Science Courses
+          </h2>
+          <CarouselSliderCourse courses={scienceCourses} />
+        </div>
+      )}
 
-      <div ref={healthRef} className="mt-16 py-8 mb-16">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6">Health Courses</h2>
-        <CarouselSliderCourse courses={healthCourses} />
-      </div>
+      {healthCourses.length >0 && (
+        <div ref={healthRef} className="mt-16 py-8 mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6">
+            Health Courses
+          </h2>
+          <CarouselSliderCourse courses={healthCourses} />
+        </div>
+      )}
     </div>
   );
 };

@@ -22,7 +22,7 @@ import { BASE_URL } from "@/utils/constants";
 
 const formSchema = z
   .object({
-    userType: z.enum(["candidate", "recruiter", "admin"]),
+    userType: z.enum(["candidate", "recruiter", "mentor", "admin"]),
     username: z.string().min(2, {
       message: "Username must be at least 2 characters.",
     }),
@@ -187,6 +187,22 @@ const SignUp = () => {
                             onClick={() => field.onChange("recruiter")}
                           >
                             Recruiter
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={
+                              field.value === "mentor"
+                                ? "default"
+                                : "outline"
+                            }
+                            className={`flex-1 ${
+                              field.value === "mentor"
+                                ? "bg-green-600 hover:bg-green-700"
+                                : "bg-white hover:bg-gray-50"
+                            }`}
+                            onClick={() => field.onChange("mentor")}
+                          >
+                            Mentor
                           </Button>
                         </div>
                       </FormItem>
