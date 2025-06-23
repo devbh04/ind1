@@ -41,8 +41,19 @@ const HackathonCard = ({ hackathon }) => {
         {/* Type and Mode */}
         <div className="flex justify-between items-center mb-2">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            {hackathon.hackathonType}
+            {{
+              allcategories: "All Categories",
+              coding: "Coding Hackathon",
+              innovation: "Innovation Challenge",
+              ai_ml: "AI/ML Hackathon",
+              blockchain: "Blockchain Hackathon",
+              cybersecurity: "Cybersecurity Hackathon",
+              data_science: "Data Science Hackathon",
+              iot: "IoT Hackathon",
+              game_dev: "Game Development Hackathon",
+            }[hackathon.hackathonType] || "Unknown Type"}
           </span>
+
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             {hackathon.eventMode === "online"
               ? "Online"
