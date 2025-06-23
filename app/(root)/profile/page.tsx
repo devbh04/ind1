@@ -333,10 +333,11 @@ const Profile = () => {
       </div>
 
       {(currentUser.userType === "recruiter" ||
+        currentUser.userType === "mentor" ||
         currentUser.userType === "admin") && (
         <>
           <h1 className="flex justify-center pt-4 text-2xl">
-            Only For Recruiters
+            Only For {currentUser.userType === 'recruiter' ?"Recruiters" : currentUser.userType === 'mentor' ? "Mentors" : "Admins"}
           </h1>
           <div className="flex flex-col sm:flex-row justify-center gap-4 items-center py-4">
             <Link href="/profile/profile-hackathons">
