@@ -19,7 +19,7 @@ const CourseCard = ({ course }) => {
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 h-full flex flex-col">
       {/* Course Cover Image - Reduced height */}
-      <div className="relative h-36 w-full bg-gray-100 overflow-hidden">
+      <div className="relative w-full bg-gray-100 overflow-hidden">
         <img
           src={coverImage}
           alt={course.courseTitle || 'Course Image'}
